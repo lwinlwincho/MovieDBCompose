@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MovieDBCompose</string>
+    <string name="title_core">CoreModuleTitle</string>
+</resources>
