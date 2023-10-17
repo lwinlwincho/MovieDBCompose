@@ -1,0 +1,66 @@
+plugins {
+    alias(libs.plugins.com.android.library)
+    alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.dagger.hilt.android)
+    id 'kotlin-kapt'
+}
+
+android {
+    namespace 'com.example.network'
+    compileSdk 33
+
+    defaultConfig {
+        minSdk 26
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    implementation(project(":core:model"))
+
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.material
+    testImplementation libs.junit4
+    androidTestImplementation libs.androidx.test.ext.junit
+    androidTestImplementation libs.androidx.test.espresso.core
+
+    implementation(libs.kotlinx.serialization.json)
+    // Kotlin serialization json
+    implementation(libs.kotlinx.serialization.json)
+    // Retrofit with Kotlin serialization Converter
+    implementation(libs.kotlinx.serialization.converter)
+   // implementation(libs.okhttp3.okhttp)
+
+    //dagger hilt
+    implementation(libs.dagger.hilt)
+    kapt(libs.hilt.android.compiler)
+
+    //okhttp
+    api(libs.okhttp3.logging.interceptor)
+
+    //chucker
+    debugImplementation(libs.chucker.library)
+    releaseImplementation(libs.chucker.library.no.op)
+
+   // debugImplementation "com.github.chuckerteam.chucker:library:3.5.2"
+   // releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.5.2"
+}
