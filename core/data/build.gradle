@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.dagger.hilt.android)
     id 'kotlin-kapt'
 }
 
@@ -33,6 +34,8 @@ android {
 
 dependencies {
 
+    implementation implementation(project(':core:domain',))
+
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.material
@@ -52,5 +55,9 @@ dependencies {
     // Retrofit with Kotlin serialization Converter
     implementation(libs.kotlinx.serialization.converter)
     implementation(libs.okhttp3.okhttp)
+
+    //dagger hilt
+    implementation(libs.dagger.hilt)
+    kapt(libs.hilt.android.compiler)
 
 }

@@ -34,7 +34,8 @@ android {
 
 dependencies {
 
-    implementation(project(":core:model"))
+    implementation implementation(project(':core:data',))
+    implementation implementation(project(':core:domain',))
 
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
@@ -48,7 +49,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     // Retrofit with Kotlin serialization Converter
     implementation(libs.kotlinx.serialization.converter)
-   // implementation(libs.okhttp3.okhttp)
 
     //dagger hilt
     implementation(libs.dagger.hilt)
@@ -60,7 +60,4 @@ dependencies {
     //chucker
     debugImplementation(libs.chucker.library)
     releaseImplementation(libs.chucker.library.no.op)
-
-   // debugImplementation "com.github.chuckerteam.chucker:library:3.5.2"
-   // releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.5.2"
 }
