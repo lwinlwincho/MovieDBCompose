@@ -50,8 +50,9 @@ android {
 
 dependencies {
 
-    implementation implementation(project(':core:domain',))
-    implementation implementation(project(':core:network',))
+    implementation implementation(project(':core:domain'))
+    implementation implementation(project(':core:network'))
+    implementation implementation(project(':core:data'))
 
     implementation libs.androidx.core.ktx
     implementation libs.androidx.lifecycle.runtime.ktx
@@ -62,6 +63,7 @@ dependencies {
     implementation libs.androidx.compose.ui.graphics
     implementation libs.androidx.compose.ui.tooling.preview
     implementation libs.androidx.compose.material3
+    //implementation libs.androidx.constraintlayout
 
     testImplementation libs.junit4
     androidTestImplementation libs.androidx.test.ext.junit
@@ -78,4 +80,9 @@ dependencies {
     //dagger hilt
     implementation(libs.dagger.hilt)
     kapt(libs.hilt.android.compiler)
+
+    //constraint
+    implementation(libs.androidx.constraintlayout.compose)
+    // Coil
+    implementation(libs.coil.kt.compose)
 }

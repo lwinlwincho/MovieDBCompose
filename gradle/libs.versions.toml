@@ -26,6 +26,9 @@ loggingInterceptor = "4.9.3"
 
 chuckerLibrary ="3.5.2"
 
+constraintCompose = "1.0.1"
+coilCompose = "2.4.0"
+
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -65,6 +68,9 @@ okhttp3-logging-interceptor ={module ="com.squareup.okhttp3:logging-interceptor"
 
 chucker-library = {module="com.github.chuckerteam.chucker:library", version.ref ="chuckerLibrary"}
 chucker-library-no-op ={module="com.github.chuckerteam.chucker:library-no-op", version.ref="chuckerLibrary"}
+
+androidx-constraintlayout-compose = {module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintCompose"}
+coil-kt-compose = {module ="io.coil-kt:coil-compose", version.ref="coilCompose"}
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
