@@ -1,5 +1,6 @@
 package com.example.model.repository
 
+import com.example.domain.repository.MovieRepository
 import com.example.model.MovieModel
 import com.example.model.MoviesResponseModel
 import com.example.model.datasource.RemoteDataSource

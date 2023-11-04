@@ -1,7 +1,7 @@
 package com.example.moviedbcompose
 
 import androidx.lifecycle.ViewModel
-import com.example.model.repository.MovieRepository
+import com.example.domain.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
