@@ -1,17 +1,18 @@
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.dagger.hilt.android)
     id 'kotlin-kapt'
 }
 
 android {
-    namespace 'com.example.moviedbcompose'
-    compileSdk 33
+    namespace 'com.lwinlwincho.moviedbcompose'
+    compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.moviedbcompose"
+        applicationId "com.lwinlwincho.moviedbcompose"
         minSdk 26
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -28,11 +29,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
     buildFeatures {
         compose true
@@ -45,14 +46,13 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-    dynamicFeatures = [':core']
 }
 
 dependencies {
 
-    implementation implementation(project(':core:domain'))
-    implementation implementation(project(':core:network'))
-    implementation implementation(project(':core:data'))
+    implementation(project(':core:domain'))
+    implementation(project(':core:network'))
+    implementation(project(':core:data'))
 
     implementation libs.androidx.core.ktx
     implementation libs.androidx.lifecycle.runtime.ktx
