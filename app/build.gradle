@@ -39,7 +39,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.8'
+        kotlinCompilerExtensionVersion '1.5.3'
     }
     packagingOptions {
         resources {
@@ -60,8 +60,11 @@ dependencies {
 
     implementation platform(libs.androidx.compose.bom)
     implementation libs.androidx.compose.ui
+    implementation libs.androidx.compose.ui.tooling
     implementation libs.androidx.compose.ui.graphics
     implementation libs.androidx.compose.ui.tooling.preview
+    implementation libs.androidx.compose.foundation
+    implementation libs.androidx.compose.ui.util
     implementation libs.androidx.compose.material3
     //implementation libs.androidx.constraintlayout
 
@@ -85,4 +88,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
     // Coil
     implementation(libs.coil.kt.compose)
+    //pager
+    implementation(libs.google.accompanist.pager)
+    //navigation
+    implementation(libs.androidx.navigation.compose)
 }

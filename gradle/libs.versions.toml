@@ -11,25 +11,26 @@ annotation = "1.6.0"
 material = "1.10.0"
 
 agp = "8.0.2"
-kotlin = "1.8.22"
+kotlin = "1.9.10"
 
-composeBom = "2022.10.00"
+composeBom = "2023.06.01"
 composeMaterial3 = "1.1.0"
 
 kotlinxSerializationJson = "1.5.1"
 serializationConverter = "1.0.0"
 okhttp = "4.11.0"
-daggerHilt = "2.44"
+daggerHilt = "2.48.1"
 roomVersion = "2.5.2"
 
 loggingInterceptor = "4.9.3"
 
-chuckerLibrary ="3.5.2"
+chuckerLibrary = "3.5.2"
 
 constraintCompose = "1.0.1"
 coilCompose = "2.4.0"
-
 coroutines = "1.7.3"
+accompanistPager = "0.27.1"
+navigationCompose = "2.7.5"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
@@ -40,6 +41,8 @@ androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = 
 androidx-compose-ui = { module = "androidx.compose.ui:ui" }
 androidx-compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
+androidx-compose-ui-util = {module = "androidx.compose.ui:ui-util"}
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "composeMaterial3" }
 
 junit4 = { module = "junit:junit", version.ref = "junit" }
@@ -53,28 +56,29 @@ annotation = { group = "androidx.annotation", name = "annotation", version.ref =
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
-androidx-lifecycle-viewmodel-compose = {module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref= "lifecycleRuntimeKtx"}
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 
-kotlinx-serialization-json = {module = "org.jetbrains.kotlinx:kotlinx-serialization-json" , version.ref = "kotlinxSerializationJson"}
-kotlinx-serialization-converter = {module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter",version.ref="serializationConverter"}
-okhttp3-okhttp = {module = "com.squareup.okhttp3:okhttp", version.ref= "okhttp"}
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+kotlinx-serialization-converter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "serializationConverter" }
+okhttp3-okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 
-androidx-room-runtime = {module = "androidx.room:room-runtime", version.ref = "roomVersion"}
-androidx-room-compiler = {module = "androidx.room:room-compiler", version.ref = "roomVersion"}
-androidx-room-ktx = {module = "androidx.room:room-ktx", version.ref = "roomVersion"}
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomVersion" }
 
-dagger-hilt = {module = "com.google.dagger:hilt-android", version.ref="daggerHilt"}
-hilt-android-compiler = {module = "com.google.dagger:hilt-android-compiler",version.ref="daggerHilt"}
+dagger-hilt = { module = "com.google.dagger:hilt-android", version.ref = "daggerHilt" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "daggerHilt" }
 
-okhttp3-logging-interceptor ={module ="com.squareup.okhttp3:logging-interceptor", version.ref="loggingInterceptor"}
+okhttp3-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 
-chucker-library = {module="com.github.chuckerteam.chucker:library", version.ref ="chuckerLibrary"}
-chucker-library-no-op ={module="com.github.chuckerteam.chucker:library-no-op", version.ref="chuckerLibrary"}
+chucker-library = { module = "com.github.chuckerteam.chucker:library", version.ref = "chuckerLibrary" }
+chucker-library-no-op = { module = "com.github.chuckerteam.chucker:library-no-op", version.ref = "chuckerLibrary" }
 
-androidx-constraintlayout-compose = {module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintCompose"}
-coil-kt-compose = {module ="io.coil-kt:coil-compose", version.ref="coilCompose"}
-
+androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintCompose" }
+coil-kt-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+google-accompanist-pager = {module ="com.google.accompanist:accompanist-pager", version.ref = "accompanistPager"}
+androidx-navigation-compose ={module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose"}
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
@@ -82,7 +86,7 @@ org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.re
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 com-android-dynamic-feature = { id = "com.android.dynamic-feature", version.ref = "agp" }
 com-android-library = { id = "com.android.library", version.ref = "agp" }
-kotlin-serialization = {id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-dagger-hilt-android = {id= "com.google.dagger.hilt.android", version.ref = "daggerHilt"}
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "daggerHilt" }
 
 
