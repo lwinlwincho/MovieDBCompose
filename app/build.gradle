@@ -83,6 +83,7 @@ dependencies {
     //dagger hilt
     implementation(libs.dagger.hilt)
     kapt(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     //constraint
     implementation(libs.androidx.constraintlayout.compose)

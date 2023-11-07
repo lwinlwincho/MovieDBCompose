@@ -1,6 +1,7 @@
 package com.lwinlwincho.moviedbcompose.home
 
 import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,9 +15,12 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,28 +39,31 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.lwinlwincho.domain.model.MovieModel
 import com.lwinlwincho.moviedbcompose.Loading
 import com.lwinlwincho.moviedbcompose.R
 import com.lwinlwincho.network.IMAGE_URL
+import kotlin.math.absoluteValue
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = viewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onEvent: (Int) -> Unit
 ) {
     val nowShowingUiState by viewModel.nowShowingUIState.collectAsState()
     val popularUiState by viewModel.popularUIState.collectAsState()
 
-    HomeContent(nowShowingUiState = nowShowingUiState, popularUiState)
+    HomeContent(nowShowingUiState = nowShowingUiState, popularUiState, onEvent)
 }
 
 @Composable
-fun HomeContent(nowShowingUiState: HomeUiState, popularUiState: HomeUiState) {
+fun HomeContent(nowShowingUiState: HomeUiState, popularUiState: HomeUiState, onEvent: (Int) -> Unit) {
 
     Column(
         modifier = Modifier
@@ -78,22 +85,31 @@ fun HomeContent(nowShowingUiState: HomeUiState, popularUiState: HomeUiState) {
         }
         if (nowShowingUiState.movieList.isNotEmpty()) {
 
+            Button(
+                onClick = { onEvent }
+            ) {
+                Text(text = "Detial")
+            }
+
+
             MovieListView(
                 "NowShowing Movie",
-                nowShowingUiState.movieList
+                nowShowingUiState.movieList,
+                onEvent
             )
         }
         if (popularUiState.movieList.isNotEmpty()) {
             MovieListView(
                 "Popular Movie",
-                popularUiState.movieList
+                popularUiState.movieList,
+                onEvent
             )
         }
     }
 }
 
 @Composable
-fun MovieListView(title: String, movieList: List<MovieModel>) {
+fun MovieListView(title: String, movieList: List<MovieModel>,onEvent: (Int) -> Unit) {
     Text(
         text = title,
         textAlign = TextAlign.Start,
@@ -109,13 +125,15 @@ fun MovieListView(title: String, movieList: List<MovieModel>) {
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(movieList) { movie ->
-            MovieItemView(movie = movie)
+            MovieItemView(movie = movie, onEvent = onEvent)
         }
     }
 }
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieItemView(movie: MovieModel) {
+fun MovieItemView(movie: MovieModel, onEvent: (Int) -> Unit) {
 
     var isLoading by remember { mutableStateOf(true) }
     var isError by remember { mutableStateOf(false) }
@@ -142,7 +160,8 @@ fun MovieItemView(movie: MovieModel) {
                 .constrainAs(moviePhoto) {
                     top.linkTo(parent.top)
                     height = Dimension.ratio("2:3")
-                }
+                },
+            onClick = { onEvent(movie.id) },
         ) {
             Image(
                 painter = if (isError.not() && !isLocalInspection) imageLoader else placeholder,
@@ -185,8 +204,8 @@ fun MovieItemView(movie: MovieModel) {
             textAlign = TextAlign.Start,
             modifier = Modifier
                 .wrapContentSize()
-                .padding(top = 8.dp , start = 4.dp)
-                .constrainAs(starRate){
+                .padding(top = 8.dp, start = 4.dp)
+                .constrainAs(starRate) {
                     start.linkTo(imgStar.end)
                     top.linkTo(imgStar.top)
                     bottom.linkTo(imgStar.bottom)
@@ -203,6 +222,9 @@ fun MovieItemPreview() {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        HomeContent(nowShowingUiState = HomeUiState(movieList = emptyList()), HomeUiState())
+        HomeContent(
+            nowShowingUiState = HomeUiState(movieList = emptyList()),
+            HomeUiState(),
+            onEvent = {})
     }
 }
