@@ -27,7 +27,6 @@ fun List<MovieResponse>.toMovieModelList():List<MovieModel>{
     }
 }
 
-
 fun CreditResponse.toCreditModel(): CreditModel {
     return CreditModel(
         id = id,
@@ -43,13 +42,6 @@ fun CastResponse.toCastModel(): CastModel {
         name = name,
         originalName = originalName,
         profilePath = profilePath.orEmpty(),
-    )
-}
-
-fun GenreResponse.toGenreModel(): GenreModel {
-    return GenreModel(
-        id = id,
-        name = name
     )
 }
 
@@ -69,6 +61,13 @@ fun MovieDetailResponse.toMovieDetailModel(): MovieDetailModel {
         runtime = runtime,
         title = title,
         voteAverage = voteAverage
+    )
+}
+
+fun GenreResponse.toGenreModel(): GenreModel {
+    return GenreModel(
+        id = id,
+        name = name
     )
 }
 

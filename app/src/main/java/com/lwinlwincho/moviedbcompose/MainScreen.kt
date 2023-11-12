@@ -20,31 +20,32 @@ fun MainScreen(
     navController: NavHostController = rememberNavController()
 ) {
 
-    val viewModel: HomeViewModel = hiltViewModel()
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val uiState by viewModel.nowShowingUIState.collectAsState()
 
     NavHost(
         navController = navController,
         startDestination = MovieScreenRoute.Home.route
     ) {
-        var movieId : String? = null
 
         composable(route = MovieScreenRoute.Home.route) {
-            HomeScreen {
-                navController.navigate(MovieScreenRoute.Detail.route)
-                movieId= it.toString()
-            }
+            HomeScreen(navController)
+                // navController.navigate(MovieScreenRoute.Detail.route)
+
+               // movieId = it
+
         }
 
         composable(
-           // route = "${MovieScreenRoute.Detail.route}/${movieId}",
             route = MovieScreenRoute.Detail.route,
-         //   arguments = listOf(navArgument("movieId") { type = NavType.StringType })
+            // route = MovieScreenRoute.Detail.route,
+            arguments = listOf(navArgument("movieId") { type = NavType.IntType })
         ) { backStackEntry ->
 
-            DetailScreen(movieId)
-           // DetailScreen()
+            val id = backStackEntry.arguments?.getInt("movieId")
+            if (id != null) {
+                DetailScreen(id)
+            }
+            // DetailScreen()
 
         }
     }
@@ -53,7 +54,7 @@ fun MainScreen(
 
 enum class MovieScreenRoute(val route: String) {
     Home(route = "home"),
-    Detail(route = "detail"),
+    Detail(route = "detail/{movieId}"),
     Favourite(route = "favourite"),
     SeeMore(route = "seeMore")
 

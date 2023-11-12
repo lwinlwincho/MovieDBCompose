@@ -2,6 +2,7 @@ package com.lwinlwincho.data.datasource
 
 import com.lwinlwincho.data.model.MovieResponse
 import com.lwinlwincho.data.model.BaseResponse
+import com.lwinlwincho.data.model.MovieDetailResponse
 import kotlinx.coroutines.flow.Flow
 
 interface RemoteDataSource {
@@ -13,5 +14,7 @@ interface RemoteDataSource {
     // for state flow
     fun getNowPlaying(): Flow<BaseResponse<MovieResponse>>
     fun getPopular(): Flow<BaseResponse<MovieResponse>>
+
+    fun getMovieDetail(movieId:Int): Flow<MovieDetailResponse>
 
 }
