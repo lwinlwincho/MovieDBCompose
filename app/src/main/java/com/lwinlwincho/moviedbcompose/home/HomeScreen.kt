@@ -140,7 +140,6 @@ fun MovieListView(title: String, movieList: List<MovieModel>, navController: Nav
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieItemView(movie: MovieModel, navController: NavHostController) {
 
