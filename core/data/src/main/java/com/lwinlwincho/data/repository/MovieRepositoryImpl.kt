@@ -1,9 +1,12 @@
 package com.lwinlwincho.data.repository
 
+import android.util.Log
 import com.lwinlwincho.domain.repository.MovieRepository
 import com.lwinlwincho.data.datasource.RemoteDataSource
+import com.lwinlwincho.data.mapper.toCreditModel
 import com.lwinlwincho.data.mapper.toMovieDetailModel
 import com.lwinlwincho.data.mapper.toMovieModelList
+import com.lwinlwincho.domain.model.CreditModel
 import com.lwinlwincho.domain.model.MovieDetailModel
 import com.lwinlwincho.domain.model.MovieModel
 import kotlinx.coroutines.flow.Flow
@@ -39,6 +42,12 @@ class MovieRepositoryImpl @Inject constructor(
     override fun getMovieDetail(moveId:Int): Flow<MovieDetailModel> {
         return remoteDataSource.getMovieDetail(movieId = moveId).map {
             it.toMovieDetailModel()
+        }
+    }
+
+    override fun getMovieCredits(moveId: Int): Flow<CreditModel> {
+        return remoteDataSource.getMovieCredits(movieId = moveId).map {
+            it.toCreditModel()
         }
     }
 }

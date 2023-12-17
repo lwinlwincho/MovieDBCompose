@@ -28,23 +28,14 @@ fun Loading() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.onPrimary,
-                ),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 5.dp
-                )
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .padding(40.dp),
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    trackColor = MaterialTheme.colorScheme.tertiary
-                )
-            }
 
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(40.dp),
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                trackColor = MaterialTheme.colorScheme.tertiary
+            )
         }
     }
 }

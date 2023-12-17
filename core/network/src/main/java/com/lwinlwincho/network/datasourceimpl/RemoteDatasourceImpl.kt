@@ -1,8 +1,10 @@
 package com.lwinlwincho.network.datasourceimpl
 
+import android.util.Log
 import com.lwinlwincho.data.model.MovieResponse
 import com.lwinlwincho.data.model.BaseResponse
 import com.lwinlwincho.data.datasource.RemoteDataSource
+import com.lwinlwincho.data.model.CreditResponse
 import com.lwinlwincho.data.model.MovieDetailResponse
 import com.lwinlwincho.network.MovieAPIService
 import kotlinx.coroutines.flow.Flow
@@ -37,11 +39,17 @@ class RemoteDatasourceImpl @Inject constructor(
         }
     }
 
-    override fun getMovieDetail(movieId:Int): Flow<MovieDetailResponse> {
+    override fun getMovieDetail(movieId: Int): Flow<MovieDetailResponse> {
         return flow {
             movieAPIService.loadMovieDetail(movieId)?.let { emit(it) }
         }
     }
 
-
+    override fun getMovieCredits(movieId: Int): Flow<CreditResponse> {
+        return flow {
+            val credit = movieAPIService.getCredits(movieId)
+            Log.d("cast", "Movie credit cast $credit")
+            emit(credit)
+        }
+    }
 }
