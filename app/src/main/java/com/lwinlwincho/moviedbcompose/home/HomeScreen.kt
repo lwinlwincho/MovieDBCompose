@@ -71,6 +71,19 @@ fun HomeScreen(
 */
     val uiState by viewModel.uiState.collectAsState()
 
+    if (uiState.loading) {
+        Loading()
+    }
+
+    if (uiState.errorMessage.isNotEmpty()) {
+        Toast.makeText(
+            LocalContext.current,
+            uiState.errorMessage,
+            Toast.LENGTH_SHORT
+        ).show()
+        viewModel.clearErrorMessage()
+    }
+
     HomeContent(
         uiState = uiState,
         onEvent = { event ->
@@ -96,18 +109,6 @@ fun HomeContent(
             .padding(bottom = 20.dp, top = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        if (uiState.loading) {
-            Loading()
-        }
-
-        if (uiState.error.isNotEmpty()) {
-            Toast.makeText(
-                LocalContext.current,
-                uiState.error,
-                Toast.LENGTH_SHORT
-            ).show()
-        }
 
         HeaderSection(movieList = uiState.popularMovies)
 

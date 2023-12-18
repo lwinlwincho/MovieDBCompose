@@ -5,13 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.lwinlwincho.domain.repository.MovieRepository
 import com.lwinlwincho.domain.model.MovieModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -24,20 +24,31 @@ class HomeViewModel @Inject constructor(
         private var _popularUIState = MutableStateFlow(HomeUiState())
         val popularUIState: StateFlow<HomeUiState> = _popularUIState.asStateFlow()*/
 
+    private val _errorMessage = MutableStateFlow("")
     val uiState = combine(
+        _errorMessage,
         movieRepository.getPopularMovies(),
         movieRepository.getNowShowingMovies()
-    ) { popularMovies, nowShowingMovies ->
+    ) { errorMessage, popularMovies, nowShowingMovies ->
         HomeUiState(
+            errorMessage = errorMessage,
             loading = false,
             popularMovies = popularMovies,
             nowShowingMovies = nowShowingMovies
         )
+    }.catch {error->
+        //_errorMessage.update { error.message.toString() }
+        _errorMessage.value = error.message.toString()
     }.stateIn(
         scope = viewModelScope,
         initialValue = HomeUiState(),
         started = SharingStarted.WhileSubscribed(5000L)
     )
+
+    fun clearErrorMessage() {
+        //_errorMessage.update { "" }
+        _errorMessage.value = ""
+    }
 
 
     /* init {
@@ -88,6 +99,6 @@ class HomeViewModel @Inject constructor(
 data class HomeUiState(
     val popularMovies: List<MovieModel> = emptyList(),
     val nowShowingMovies: List<MovieModel> = emptyList(),
-    val error: String = "",
+    val errorMessage: String = "Error Message",
     val loading: Boolean = true
 )
