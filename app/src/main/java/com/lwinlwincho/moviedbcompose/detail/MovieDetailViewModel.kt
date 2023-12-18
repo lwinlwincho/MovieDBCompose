@@ -1,5 +1,6 @@
 package com.lwinlwincho.moviedbcompose.detail
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lwinlwincho.domain.model.CastModel
@@ -15,11 +16,15 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(
-    private val movieRepository: MovieRepository
+    private val movieRepository: MovieRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private val movieId = savedStateHandle.get<Int>("movieId")!!
 
     private var _detailUiState = MutableStateFlow(MovieDetailUiState())
     val detailUiState: StateFlow<MovieDetailUiState> = _detailUiState.asStateFlow()
@@ -27,8 +32,12 @@ class MovieDetailViewModel @Inject constructor(
     private var _castUiState = MutableStateFlow(MovieDetailUiState())
     val castUiState: StateFlow<MovieDetailUiState> = _castUiState.asStateFlow()
 
-    fun getMovieDetail(movieId: Int) {
-        viewModelScope.launch {
+    init {
+        getMovieDetail(movieId = movieId)
+        getMovieCredit(movieId = movieId)
+    }
+    private fun getMovieDetail(movieId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
             movieRepository.getMovieDetail(movieId)
                 .catch {
                     _detailUiState.value =
@@ -40,8 +49,8 @@ class MovieDetailViewModel @Inject constructor(
         }
     }
 
-    fun getMovieCredit(movieId: Int) {
-        viewModelScope.launch {
+    private fun getMovieCredit(movieId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
             movieRepository.getMovieCredits(movieId)
                 .catch {
                     _castUiState.value =

@@ -50,12 +50,11 @@ import com.lwinlwincho.domain.model.GenreModel
 import com.lwinlwincho.domain.model.MovieDetailModel
 import com.lwinlwincho.moviedbcompose.Loading
 import com.lwinlwincho.moviedbcompose.R
+import com.lwinlwincho.moviedbcompose.ui.theme.MovieDBComposeTheme
 import com.lwinlwincho.network.IMAGE_URL
 
 @Composable
-fun DetailScreen(
-    id: Int
-) {
+fun DetailScreen() {
     val viewModel: MovieDetailViewModel = hiltViewModel()
 
     val detailUiState by viewModel.detailUiState.collectAsState()
@@ -63,8 +62,8 @@ fun DetailScreen(
 
     DetailContent(detailUiState = detailUiState, castUiState = castUiState)
 
-    viewModel.getMovieDetail(id)
-    viewModel.getMovieCredit(id)
+    /*  viewModel.getMovieDetail(id)
+      viewModel.getMovieCredit(id)*/
 }
 
 @Composable
@@ -244,16 +243,16 @@ fun DetailContent(detailUiState: MovieDetailUiState, castUiState: MovieDetailUiS
 
                 Card(
                     modifier = Modifier
+                        .fillMaxWidth(.3f)
                         .padding(start = 30.dp)
+                        .aspectRatio(19f / 24f)
                         .layoutId("moviePoster")
                 ) {
                     Image(
                         painter = if (isError.not() && !isLocalInspection) posterImageLoader else placeholder,
                         contentDescription = detailUiState.movieDetailModel.id.toString(),
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxWidth(.3f)
-                            .aspectRatio(19f / 24f)
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
 
@@ -271,7 +270,7 @@ fun DetailContent(detailUiState: MovieDetailUiState, castUiState: MovieDetailUiS
                     painter = painterResource(id = R.drawable.ic_star_rate_24),
                     contentDescription = null,
                     modifier = Modifier
-                        .padding(top = 8.dp,start = 20.dp)
+                        .padding(top = 8.dp, start = 20.dp)
                         .layoutId("imgStarRate")
                 )
 
@@ -291,7 +290,7 @@ fun DetailContent(detailUiState: MovieDetailUiState, castUiState: MovieDetailUiS
                     contentPadding = PaddingValues(top = 16.dp, start = 24.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.layoutId("genre"),
-                    ) {
+                ) {
                     items(detailUiState.movieDetailModel.genres) {
                         Text(
                             text = it.name,
@@ -677,38 +676,43 @@ fun Long.toHourMinute(): String {
 
 @Preview(showBackground = true)
 @Composable
-fun DetailContentPreview() {/* DetailContent(
-         detailUiState = MovieDetailUiState(
-             movieDetail = MovieDetailModel(
-                 "/feSiISwgEpVzR1v3zv2n2AU4ANJ.jpg",
-                 listOf(
-                     GenreModel(id = 28, name = "Action"),
-                     GenreModel(id = 12, name = "Adventure"),
-                     GenreModel(id = 878, name = "Science Fiction")
+fun DetailContentPreview() {
+    MovieDBComposeTheme {
+        DetailContent(
+            detailUiState = MovieDetailUiState(
+                loading = false,
+                movieDetailModel = MovieDetailModel(
+                    "/feSiISwgEpVzR1v3zv2n2AU4ANJ.jpg",
+                    listOf(
+                        GenreModel(id = 28, name = "Action"),
+                        GenreModel(id = 12, name = "Adventure"),
+                        GenreModel(id = 878, name = "Science Fiction")
 
-                 ),
-                 609681,
-                 "tt10676048",
-                 "en",
-                 "Spiderman No Way Home",
-                 "Carol Danvers, aka Captain Marvel, has reclaimed her identity from the tyrannical Kree and taken revenge on the Supreme Intelligence. But unintended consequences see Carol shouldering the burden of a ",
-                 "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg",
-                 "2023-11-08",
-                 105,
-                 "Spiderman No Way Home",
-                 6.401
-             )
-         ),
-         castUiState = MovieDetailUiState.SuccessMovieCredit(
-             CreditModel(
-                 609681,
-                 listOf(
-                     CastModel(1, "James", "John", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg"),
-                     CastModel(2, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg"),
-                     CastModel(3, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg"),
-                     CastModel(4, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg")
-                 )
-             )
-         )
-     )*/
+                    ),
+                    609681,
+                    "tt10676048",
+                    "en",
+                    "Spiderman No Way Home",
+                    "Carol Danvers, aka Captain Marvel, has reclaimed her identity from the tyrannical Kree and taken revenge on the Supreme Intelligence. But unintended consequences see Carol shouldering the burden of a ",
+                    "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg",
+                    "2023-11-08",
+                    105,
+                    "Spiderman No Way Home",
+                    6.401
+                )
+            ),
+            castUiState = MovieDetailUiState(
+                loading = false,
+                creditModel = CreditModel(
+                    609681,
+                    listOf(
+                        CastModel(1, "James", "John", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg"),
+                        CastModel(2, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg"),
+                        CastModel(3, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg"),
+                        CastModel(4, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg")
+                    )
+                )
+            )
+        )
+    }
 }

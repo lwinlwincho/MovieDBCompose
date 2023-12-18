@@ -98,10 +98,8 @@ fun MainScreen() {
                 composable(
                     route = MovieScreenRoute.Detail.route,
                     arguments = listOf(navArgument("movieId") { type = NavType.IntType })
-                ) { backStackEntry ->
-                    val id = backStackEntry.arguments?.getInt("movieId")
-                    id?.let { DetailScreen(id = it) }
-
+                ) {
+                    DetailScreen()
                 }
             }
         }
