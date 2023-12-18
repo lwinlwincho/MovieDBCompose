@@ -8,28 +8,44 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val movieRepository: MovieRepository
+    movieRepository: MovieRepository
 ) : ViewModel() {
+    /*
+        private var _nowShowingUIState = MutableStateFlow(HomeUiState())
+        val nowShowingUIState: StateFlow<HomeUiState> = _nowShowingUIState.asStateFlow()
 
-    private var _nowShowingUIState = MutableStateFlow(HomeUiState())
-    val nowShowingUIState: StateFlow<HomeUiState> = _nowShowingUIState.asStateFlow()
+        private var _popularUIState = MutableStateFlow(HomeUiState())
+        val popularUIState: StateFlow<HomeUiState> = _popularUIState.asStateFlow()*/
 
-    private var _popularUIState = MutableStateFlow(HomeUiState())
-    val popularUIState: StateFlow<HomeUiState> = _popularUIState.asStateFlow()
+    val uiState = combine(
+        movieRepository.getPopularMovies(),
+        movieRepository.getNowShowingMovies()
+    ) { popularMovies, nowShowingMovies ->
+        HomeUiState(
+            loading = false,
+            popularMovies = popularMovies,
+            nowShowingMovies = nowShowingMovies
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        initialValue = HomeUiState(),
+        started = SharingStarted.WhileSubscribed(5000L)
+    )
 
-    init {
-        getNowShowing()
-        getPopular()
-    }
 
-    private fun getNowShowing() {
+    /* init {
+         getNowShowing()
+         getPopular()
+     }*/
+
+    /*private fun getNowShowing() {
         viewModelScope.launch {
             movieRepository.getNowShowingMovies()
                 .catch {
@@ -38,7 +54,7 @@ class HomeViewModel @Inject constructor(
                 }
                 .collectLatest { it ->
                     _nowShowingUIState.value =
-                        HomeUiState(movieList = it.sortedByDescending { it.releaseDate }, loading = false)
+                        HomeUiState(popularMovieList = it.sortedByDescending { it.releaseDate }, loading = false)
                 }
         }
     }
@@ -52,10 +68,10 @@ class HomeViewModel @Inject constructor(
                 }
                 .collectLatest { it ->
                     _popularUIState.value =
-                        HomeUiState(movieList = it.sortedByDescending { it.voteAverage }, loading = false)
+                        HomeUiState(popularMovieList = it.sortedByDescending { it.voteAverage }, loading = false)
                 }
         }
-    }
+    }*/
 }
 
 /*sealed class HomeUIState {
@@ -70,7 +86,8 @@ class HomeViewModel @Inject constructor(
 }*/
 
 data class HomeUiState(
-    val movieList: List<MovieModel> = emptyList(),
+    val popularMovies: List<MovieModel> = emptyList(),
+    val nowShowingMovies: List<MovieModel> = emptyList(),
     val error: String = "",
     val loading: Boolean = true
 )

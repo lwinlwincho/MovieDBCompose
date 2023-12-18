@@ -25,9 +25,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -57,8 +55,9 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.lwinlwincho.domain.model.MovieModel
 import com.lwinlwincho.moviedbcompose.Loading
-import com.lwinlwincho.moviedbcompose.MovieScreenRoute
+import com.lwinlwincho.moviedbcompose.PreviewData.previewMovieList
 import com.lwinlwincho.moviedbcompose.R
+import com.lwinlwincho.moviedbcompose.ui.theme.MovieDBComposeTheme
 import com.lwinlwincho.network.IMAGE_URL
 import kotlin.math.absoluteValue
 
@@ -67,17 +66,27 @@ fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val nowShowingUiState by viewModel.nowShowingUIState.collectAsState()
+    /*val nowShowingUiState by viewModel.nowShowingUIState.collectAsState()
     val popularUiState by viewModel.popularUIState.collectAsState()
+*/
+    val uiState by viewModel.uiState.collectAsState()
 
-    HomeContent(nowShowingUiState = nowShowingUiState, popularUiState, navController)
+    HomeContent(
+        uiState = uiState,
+        onEvent = { event ->
+            when (event) {
+                is HomeEvent.GoToDetails -> {
+                    navController.navigate("detail/" + event.movieId)
+                }
+            }
+        }
+    )
 }
 
 @Composable
 fun HomeContent(
-    nowShowingUiState: HomeUiState,
-    popularUiState: HomeUiState,
-    navController: NavHostController
+    uiState: HomeUiState,
+    onEvent: (HomeEvent) -> Unit
 ) {
 
     Column(
@@ -88,38 +97,39 @@ fun HomeContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        if (nowShowingUiState.loading) {
+        if (uiState.loading) {
             Loading()
         }
 
-        if (nowShowingUiState.error.isNotEmpty()) {
+        if (uiState.error.isNotEmpty()) {
             Toast.makeText(
                 LocalContext.current,
-                nowShowingUiState.error,
+                uiState.error,
                 Toast.LENGTH_SHORT
             ).show()
         }
 
-        if (nowShowingUiState.movieList.isNotEmpty()) {
-            PagerScreen(movieList = nowShowingUiState.movieList)
-            MovieListView(
-                "NowShowing Movie",
-                nowShowingUiState.movieList,
-                navController
-            )
-        }
-        if (popularUiState.movieList.isNotEmpty()) {
-            MovieListView(
-                "Popular Movie",
-                popularUiState.movieList,
-                navController
-            )
-        }
+        HeaderSection(movieList = uiState.popularMovies)
+
+        MovieListSection(
+            title = "NowShowing Movie",
+            movieList = uiState.popularMovies,
+            onEvent = onEvent
+        )
+        MovieListSection(
+            title = "Popular Movie",
+            movieList = uiState.popularMovies,
+            onEvent = onEvent
+        )
     }
 }
 
 @Composable
-fun MovieListView(title: String, movieList: List<MovieModel>, navController: NavHostController) {
+fun MovieListSection(
+    title: String,
+    movieList: List<MovieModel>,
+    onEvent: (HomeEvent) -> Unit
+) {
     Text(
         text = title,
         textAlign = TextAlign.Start,
@@ -134,14 +144,18 @@ fun MovieListView(title: String, movieList: List<MovieModel>, navController: Nav
         contentPadding = PaddingValues(end = 24.dp, start = 24.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        items(movieList) { movie ->
-            MovieItemView(movie = movie, navController)
+        items(
+            items = movieList,
+            key = { it.id },
+            contentType = { "MovieItem" }
+        ) { movie ->
+            MovieItem(movie = movie, onEvent = onEvent)
         }
     }
 }
 
 @Composable
-fun MovieItemView(movie: MovieModel, navController: NavHostController) {
+fun MovieItem(movie: MovieModel, onEvent: (HomeEvent) -> Unit) {
 
     var isLoading by remember { mutableStateOf(true) }
     var isError by remember { mutableStateOf(false) }
@@ -169,7 +183,7 @@ fun MovieItemView(movie: MovieModel, navController: NavHostController) {
                     top.linkTo(parent.top)
                     height = Dimension.ratio("2:3")
                 }
-                .clickable { navController.navigate("detail/" + movie.id) },
+                .clickable { onEvent(HomeEvent.GoToDetails(movieId = movie.id)) },
             // onClick = { onEvent(movie.id) },
 
         ) {
@@ -226,7 +240,7 @@ fun MovieItemView(movie: MovieModel, navController: NavHostController) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PagerScreen(movieList: List<MovieModel>) {
+fun HeaderSection(movieList: List<MovieModel>) {
 
     val pagerState = rememberPagerState(
         pageCount = { movieList.size },
@@ -317,14 +331,15 @@ fun PagerScreen(movieList: List<MovieModel>) {
 @Preview(showBackground = true)
 @Composable
 fun MovieItemPreview() {
-    /* Surface(
-         modifier = Modifier.fillMaxSize(),
-         color = MaterialTheme.colorScheme.background
-     ) {
-         HomeContent(
-             nowShowingUiState = HomeUiState(movieList = emptyList()),
-             HomeUiState(),
-             onEvent = {},
-             NavHostController())
-     }*/
+    MovieDBComposeTheme {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            HomeContent(
+                HomeUiState(
+                    popularMovies = previewMovieList,
+                    nowShowingMovies = previewMovieList
+                ),
+                onEvent = {}
+            )
+        }
+    }
 }
