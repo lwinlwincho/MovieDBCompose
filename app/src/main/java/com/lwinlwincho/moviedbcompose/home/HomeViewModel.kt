@@ -25,6 +25,7 @@ class HomeViewModel @Inject constructor(
         val popularUIState: StateFlow<HomeUiState> = _popularUIState.asStateFlow()*/
 
     private val _errorMessage = MutableStateFlow("")
+    
     val uiState = combine(
         _errorMessage,
         movieRepository.getPopularMovies(),
@@ -37,6 +38,7 @@ class HomeViewModel @Inject constructor(
             nowShowingMovies = nowShowingMovies
         )
     }.catch {error->
+        //if it is obj,set data with ".update{}" else ".value"
         //_errorMessage.update { error.message.toString() }
         _errorMessage.value = error.message.toString()
     }.stateIn(
