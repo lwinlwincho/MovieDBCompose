@@ -1,8 +1,9 @@
 package com.lwinlwincho.domain.repository
 
-import com.lwinlwincho.domain.model.CreditModel
-import com.lwinlwincho.domain.model.MovieDetailModel
-import com.lwinlwincho.domain.model.MovieModel
+import com.lwinlwincho.domain.localModel.MovieItem
+import com.lwinlwincho.domain.remoteModel.CreditModel
+import com.lwinlwincho.domain.remoteModel.MovieDetailModel
+import com.lwinlwincho.domain.remoteModel.MovieModel
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
@@ -18,4 +19,12 @@ interface MovieRepository {
     fun getMovieDetail(moveId:Int): Flow<MovieDetailModel>
 
     fun getMovieCredits(moveId: Int): Flow<CreditModel>
+
+    fun getAllFavouriteMovies():Flow<List<MovieItem>>
+
+    fun getFavouriteById(id: Long):Flow<MovieItem>
+
+    suspend fun insertFavouriteMovie(movie:MovieItem)
+
+    suspend fun deleteFavouriteMovie(movie:MovieItem)
 }
