@@ -42,10 +42,10 @@ import androidx.constraintlayout.compose.layoutId
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
-import com.lwinlwincho.domain.model.CastModel
-import com.lwinlwincho.domain.model.CreditModel
-import com.lwinlwincho.domain.model.GenreModel
-import com.lwinlwincho.domain.model.MovieDetailModel
+import com.lwinlwincho.domain.remoteModel.CastModel
+import com.lwinlwincho.domain.remoteModel.CreditModel
+import com.lwinlwincho.domain.remoteModel.GenreModel
+import com.lwinlwincho.domain.remoteModel.MovieDetailModel
 import com.lwinlwincho.moviedbcompose.Loading
 import com.lwinlwincho.moviedbcompose.R
 import com.lwinlwincho.moviedbcompose.toHourMinute

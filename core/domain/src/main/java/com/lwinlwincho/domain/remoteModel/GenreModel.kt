@@ -1,4 +1,4 @@
-package com.lwinlwincho.domain.model
+package com.lwinlwincho.domain.remoteModel
 
 data class GenreModel(
     val id: Long,

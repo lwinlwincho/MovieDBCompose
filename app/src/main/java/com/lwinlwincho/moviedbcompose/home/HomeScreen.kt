@@ -53,7 +53,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
-import com.lwinlwincho.domain.model.MovieModel
+import com.lwinlwincho.domain.remoteModel.MovieModel
 import com.lwinlwincho.moviedbcompose.Loading
 import com.lwinlwincho.moviedbcompose.PreviewData.previewMovieList
 import com.lwinlwincho.moviedbcompose.R

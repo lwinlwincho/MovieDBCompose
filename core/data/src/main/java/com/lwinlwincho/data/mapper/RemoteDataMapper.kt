@@ -5,11 +5,11 @@ import com.lwinlwincho.data.model.CreditResponse
 import com.lwinlwincho.data.model.GenreResponse
 import com.lwinlwincho.data.model.MovieDetailResponse
 import com.lwinlwincho.data.model.MovieResponse
-import com.lwinlwincho.domain.model.CastModel
-import com.lwinlwincho.domain.model.CreditModel
-import com.lwinlwincho.domain.model.GenreModel
-import com.lwinlwincho.domain.model.MovieDetailModel
-import com.lwinlwincho.domain.model.MovieModel
+import com.lwinlwincho.domain.remoteModel.CastModel
+import com.lwinlwincho.domain.remoteModel.CreditModel
+import com.lwinlwincho.domain.remoteModel.GenreModel
+import com.lwinlwincho.domain.remoteModel.MovieDetailModel
+import com.lwinlwincho.domain.remoteModel.MovieModel
 
 fun MovieResponse.toMovieModel(): MovieModel {
     return MovieModel(
@@ -70,5 +70,6 @@ fun GenreResponse.toGenreModel(): GenreModel {
         name = name
     )
 }
+
 
 

@@ -33,6 +33,8 @@ coroutines = "1.7.3"
 accompanistPager = "0.27.1"
 navigationCompose = "2.7.5"
 
+room = "2.5.2"
+
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }

@@ -3,10 +3,8 @@ package com.lwinlwincho.moviedbcompose.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lwinlwincho.domain.model.CastModel
-import com.lwinlwincho.domain.model.CreditModel
-import com.lwinlwincho.domain.model.GenreModel
-import com.lwinlwincho.domain.model.MovieDetailModel
+import com.lwinlwincho.domain.remoteModel.CreditModel
+import com.lwinlwincho.domain.remoteModel.MovieDetailModel
 import com.lwinlwincho.domain.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
