@@ -1,15 +1,11 @@
 package com.lwinlwincho.data.repository
 
+import com.lwinlwincho.data.datasource.LocalDataSource
 import com.lwinlwincho.domain.repository.MovieRepository
 import com.lwinlwincho.data.datasource.RemoteDataSource
 import com.lwinlwincho.data.mapper.toCreditModel
 import com.lwinlwincho.data.mapper.toMovieDetailModel
-import com.lwinlwincho.data.mapper.toMovieEntity
-import com.lwinlwincho.data.mapper.toMovieItem
 import com.lwinlwincho.data.mapper.toMovieModelList
-import com.lwinlwincho.database.MovieDao
-import com.lwinlwincho.database.MovieEntity
-import com.lwinlwincho.domain.localModel.MovieItem
 import com.lwinlwincho.domain.remoteModel.CreditModel
 import com.lwinlwincho.domain.remoteModel.MovieDetailModel
 import com.lwinlwincho.domain.remoteModel.MovieModel
@@ -19,7 +15,7 @@ import javax.inject.Inject
 
 class MovieRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
-    private val movieDao: MovieDao
+    private val localDataSource: LocalDataSource
 ) : MovieRepository {
 
     override val nowShowingMoviesFlow: Flow<List<MovieModel>>
@@ -56,13 +52,13 @@ class MovieRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getAllFavouriteMovies(): Flow<List<MovieItem>> {
-        return movieDao.getAllMovie().map {
-            it.map(MovieEntity::toMovieItem)
+    override fun getAllFavouriteMovies(): Flow<List<MovieModel>> {
+        return localDataSource.getAllMovies().map {
+            it.toMovieModelList()
         }
     }
 
-    override fun getFavouriteById(id: Long): Flow<MovieItem> {
+    /*override fun getFavouriteById(id: Long): Flow<MovieItem> {
         return movieDao.getMovieById(id).map {
             it!!.toMovieItem()
         }
@@ -74,5 +70,5 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun deleteFavouriteMovie(movie: MovieItem) {
         movieDao.delete(movie = movie.toMovieEntity())
-    }
+    }*/
 }

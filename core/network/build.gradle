@@ -35,7 +35,6 @@ android {
 dependencies {
 
     implementation (project(':core:data'))
-    implementation (project(':core:domain'))
 
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
@@ -44,7 +43,6 @@ dependencies {
     androidTestImplementation libs.androidx.test.ext.junit
     androidTestImplementation libs.androidx.test.espresso.core
 
-    implementation(libs.kotlinx.serialization.json)
     // Kotlin serialization json
     implementation(libs.kotlinx.serialization.json)
     // Retrofit with Kotlin serialization Converter

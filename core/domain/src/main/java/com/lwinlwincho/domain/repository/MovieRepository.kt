@@ -20,11 +20,11 @@ interface MovieRepository {
 
     fun getMovieCredits(moveId: Int): Flow<CreditModel>
 
-    fun getAllFavouriteMovies():Flow<List<MovieItem>>
-
+    fun getAllFavouriteMovies():Flow<List<MovieModel>>
+/*
     fun getFavouriteById(id: Long):Flow<MovieItem>
 
     suspend fun insertFavouriteMovie(movie:MovieItem)
 
-    suspend fun deleteFavouriteMovie(movie:MovieItem)
+    suspend fun deleteFavouriteMovie(movie:MovieItem)*/
 }

@@ -2,32 +2,30 @@ package com.lwinlwincho.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.lwinlwincho.database.MovieDao
+import com.lwinlwincho.database.MovieRoomDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
-@InstallIn
+@InstallIn(SingletonComponent::class)
 object DatabaseModule {
 
+    @Singleton
     @Provides
-    @ViewModelScoped
-    fun provideMovieRoomDatabase(@ApplicationContext context: Context): com.lwinlwincho.database.MovieRoomDatabase {
-        return Room.databaseBuilder(
-            context,
-            com.lwinlwincho.database.MovieRoomDatabase::class.java,
-            "movie_database"
-        ).allowMainThreadQueries()
-            .fallbackToDestructiveMigration()
-            .build()
+    fun provideMovieRoomDatabase(@ApplicationContext context: Context): RoomDatabase {
+        return MovieRoomDatabase.getDatabase(context)
+
     }
 
-
+    @Singleton
     @Provides
-    @ViewModelScoped
-    fun provideMovieDao(movieRoomDatabase: com.lwinlwincho.database.MovieRoomDatabase): com.lwinlwincho.database.MovieDao {
+    fun provideMovieDao(movieRoomDatabase: MovieRoomDatabase): MovieDao {
         return movieRoomDatabase.movieDao()
     }
 }

@@ -1,7 +1,7 @@
-package com.lwinlwincho.network.di
+package com.lwinlwincho.data
 
-import com.lwinlwincho.domain.repository.MovieRepository
 import com.lwinlwincho.data.repository.MovieRepositoryImpl
+import com.lwinlwincho.domain.repository.MovieRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -25,7 +25,7 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindMovieRepositoryImpl(
+    abstract fun bindMovieRepository(
         movieRepositoryImpl: MovieRepositoryImpl
     ): MovieRepository
 }
