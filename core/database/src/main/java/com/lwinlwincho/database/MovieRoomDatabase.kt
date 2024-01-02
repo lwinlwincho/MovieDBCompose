@@ -11,16 +11,18 @@ abstract class MovieRoomDatabase : RoomDatabase() {
     abstract fun movieDao(): MovieDao
 
     companion object {
-        @Volatile
-        private var Instance: MovieRoomDatabase? = null
+        @Volatile private var instance: MovieRoomDatabase? = null
 
-        fun getDatabase(context: Context): MovieRoomDatabase {
-            return Instance ?: synchronized(this) {
-                Room.databaseBuilder(context, MovieRoomDatabase::class.java, "movie_database")
-                    .build()
-                    .also { Instance = it }
+
+        fun getInstance(context: Context): MovieRoomDatabase {
+            return instance ?: synchronized(this) {
+                instance ?: buildDatabase(context).also { instance = it }
             }
+        }
 
+        private fun buildDatabase(context: Context): MovieRoomDatabase {
+            return Room.databaseBuilder(context, MovieRoomDatabase::class.java, "movie_database")
+                .build()
         }
     }
 }
