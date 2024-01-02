@@ -12,15 +12,14 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@Module
 @InstallIn(SingletonComponent::class)
+@Module
 object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideMovieRoomDatabase(@ApplicationContext context: Context): RoomDatabase {
-        return MovieRoomDatabase.getDatabase(context)
-
+    fun provideMovieRoomDatabase(@ApplicationContext context: Context): MovieRoomDatabase {
+        return MovieRoomDatabase.getInstance(context)
     }
 
     @Singleton

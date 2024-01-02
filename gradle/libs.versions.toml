@@ -21,7 +21,7 @@ serializationConverter = "1.0.0"
 okhttp = "4.11.0"
 daggerHilt = "2.48.1"
 androidxHiltNavigationCompose = "1.0.0"
-roomVersion = "2.5.2"
+roomVersion = "2.6.1"
 
 loggingInterceptor = "4.9.3"
 
