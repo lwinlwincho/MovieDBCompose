@@ -184,10 +184,11 @@ fun MovieItem(movie: MovieModel, onEvent: (HomeEvent) -> Unit) {
                     top.linkTo(parent.top)
                     height = Dimension.ratio("2:3")
                 }
-                .clickable { onEvent(HomeEvent.GoToDetails(movieId = movie.id)) },
-            // onClick = { onEvent(movie.id) },
-
-        ) {
+                .clickable {
+                    onEvent(HomeEvent.GoToDetails(movieId = movie.id))
+                }
+                .padding(4.dp)
+            ) {
             Image(
                 painter = if (isError.not() && !isLocalInspection) imageLoader else placeholder,
                 contentDescription = movie.id.toString(),

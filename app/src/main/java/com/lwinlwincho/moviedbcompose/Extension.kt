@@ -17,6 +17,8 @@ fun Long.toHourMinute(): String {
     return "${hours}h ${minutes}m"
 }
 
+
+
 @Composable
 fun asyncImage(posterPath: String): AsyncImagePainter {
 
@@ -24,7 +26,8 @@ fun asyncImage(posterPath: String): AsyncImagePainter {
     var isError by remember { mutableStateOf(false) }
 
     val imageLoader =
-        rememberAsyncImagePainter(model = IMAGE_URL + posterPath,
+        rememberAsyncImagePainter(
+            model = IMAGE_URL + posterPath,
             onState = { state ->
                 isLoading = state is AsyncImagePainter.State.Loading
                 isError = state is AsyncImagePainter.State.Error
@@ -32,3 +35,4 @@ fun asyncImage(posterPath: String): AsyncImagePainter {
         )
     return imageLoader
 }
+

@@ -58,17 +58,17 @@ class MovieRepositoryImpl @Inject constructor(
         }
     }
 
-    /*override fun getFavouriteById(id: Long): Flow<MovieItem> {
+    /*override fun getFavouriteById(id: Long): Flow<MovieModel> {
         return movieDao.getMovieById(id).map {
             it!!.toMovieItem()
         }
     }
 
-    override suspend fun insertFavouriteMovie(movie: MovieItem) {
+    override suspend fun insertFavouriteMovie(movie: MovieModel) {
         movieDao.insertMovie(movie = movie.toMovieEntity())
     }
 
-    override suspend fun deleteFavouriteMovie(movie: MovieItem) {
+    override suspend fun deleteFavouriteMovie(movie: MovieModel) {
         movieDao.delete(movie = movie.toMovieEntity())
     }*/
 }

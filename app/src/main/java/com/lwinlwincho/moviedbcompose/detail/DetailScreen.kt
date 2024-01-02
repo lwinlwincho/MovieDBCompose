@@ -40,17 +40,15 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.layoutId
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
 import com.lwinlwincho.domain.remoteModel.CastModel
 import com.lwinlwincho.domain.remoteModel.CreditModel
 import com.lwinlwincho.domain.remoteModel.GenreModel
 import com.lwinlwincho.domain.remoteModel.MovieDetailModel
 import com.lwinlwincho.moviedbcompose.Loading
 import com.lwinlwincho.moviedbcompose.R
+import com.lwinlwincho.moviedbcompose.asyncImage
 import com.lwinlwincho.moviedbcompose.toHourMinute
 import com.lwinlwincho.moviedbcompose.ui.theme.MovieDBComposeTheme
-import com.lwinlwincho.network.IMAGE_URL
 
 @Composable
 fun DetailScreen() {
@@ -95,7 +93,6 @@ fun DetailContent(detailUiState: MovieDetailUiState, castUiState: MovieDetailUiS
                 LocalContext.current, detailUiState.error, Toast.LENGTH_SHORT
             ).show()
         }
-
     }
 }
 
@@ -375,21 +372,6 @@ fun CastSession(castUiState: MovieDetailUiState) {
     }
 }
 
-@Composable
-fun asyncImage(posterPath: String): AsyncImagePainter {
-
-    var isLoading by remember { mutableStateOf(true) }
-    var isError by remember { mutableStateOf(false) }
-
-    val imageLoader =
-        rememberAsyncImagePainter(model = IMAGE_URL + posterPath,
-            onState = { state ->
-                isLoading = state is AsyncImagePainter.State.Loading
-                isError = state is AsyncImagePainter.State.Error
-            }
-        )
-    return imageLoader
-}
 
 @Preview(showBackground = true)
 @Composable

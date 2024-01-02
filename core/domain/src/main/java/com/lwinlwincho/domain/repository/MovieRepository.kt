@@ -1,6 +1,5 @@
 package com.lwinlwincho.domain.repository
 
-import com.lwinlwincho.domain.localModel.MovieItem
 import com.lwinlwincho.domain.remoteModel.CreditModel
 import com.lwinlwincho.domain.remoteModel.MovieDetailModel
 import com.lwinlwincho.domain.remoteModel.MovieModel
@@ -22,9 +21,9 @@ interface MovieRepository {
 
     fun getAllFavouriteMovies():Flow<List<MovieModel>>
 /*
-    fun getFavouriteById(id: Long):Flow<MovieItem>
+    fun getFavouriteById(id: Long):Flow<MovieModel>
 
-    suspend fun insertFavouriteMovie(movie:MovieItem)
+    suspend fun insertFavouriteMovie(movie:MovieModel)
 
-    suspend fun deleteFavouriteMovie(movie:MovieItem)*/
+    suspend fun deleteFavouriteMovie(movie:MovieModel)*/
 }
