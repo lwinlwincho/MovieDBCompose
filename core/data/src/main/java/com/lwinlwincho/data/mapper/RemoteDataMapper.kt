@@ -21,9 +21,25 @@ fun MovieResponse.toMovieModel(): MovieModel {
     )
 }
 
-fun List<MovieResponse>.toMovieModelList():List<MovieModel>{
+fun List<MovieResponse>.toMovieModelList(): List<MovieModel> {
     return this.map {
         it.toMovieModel()
+    }
+}
+
+fun MovieModel.toMovieResponse(): MovieResponse {
+    return MovieResponse(
+        id = id,
+        posterPath = posterPath,
+        title = title,
+        releaseDate = releaseDate,
+        voteAverage = voteAverage
+    )
+}
+
+fun List<MovieModel>.toMovieResponseList(): List<MovieResponse> {
+    return this.map {
+        it.toMovieResponse()
     }
 }
 

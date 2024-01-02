@@ -5,5 +5,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
 
-    fun getAllMovies(): Flow<List<MovieResponse>>
+    fun getAllFavouriteMovies(): Flow<List<MovieResponse>>
+
+    fun getFavouriteById(id: Long): Flow<MovieResponse?>
+
+    suspend fun insertFavouriteMovie(movie: MovieResponse)
+
+    suspend fun deleteFavouriteMovie(movie: MovieResponse)
 }

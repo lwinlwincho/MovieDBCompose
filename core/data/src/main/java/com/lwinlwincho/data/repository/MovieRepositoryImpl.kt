@@ -5,7 +5,9 @@ import com.lwinlwincho.domain.repository.MovieRepository
 import com.lwinlwincho.data.datasource.RemoteDataSource
 import com.lwinlwincho.data.mapper.toCreditModel
 import com.lwinlwincho.data.mapper.toMovieDetailModel
+import com.lwinlwincho.data.mapper.toMovieModel
 import com.lwinlwincho.data.mapper.toMovieModelList
+import com.lwinlwincho.data.mapper.toMovieResponse
 import com.lwinlwincho.domain.remoteModel.CreditModel
 import com.lwinlwincho.domain.remoteModel.MovieDetailModel
 import com.lwinlwincho.domain.remoteModel.MovieModel
@@ -53,22 +55,22 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override fun getAllFavouriteMovies(): Flow<List<MovieModel>> {
-        return localDataSource.getAllMovies().map {
+        return localDataSource.getAllFavouriteMovies().map {
             it.toMovieModelList()
         }
     }
 
-    /*override fun getFavouriteById(id: Long): Flow<MovieModel> {
-        return movieDao.getMovieById(id).map {
-            it!!.toMovieItem()
+    override fun getFavouriteById(id: Long): Flow<MovieModel> {
+        return localDataSource.getFavouriteById(id).map {
+            it!!.toMovieModel()
         }
     }
 
     override suspend fun insertFavouriteMovie(movie: MovieModel) {
-        movieDao.insertMovie(movie = movie.toMovieEntity())
+        localDataSource.insertFavouriteMovie(movie = movie.toMovieResponse())
     }
 
     override suspend fun deleteFavouriteMovie(movie: MovieModel) {
-        movieDao.delete(movie = movie.toMovieEntity())
-    }*/
+        localDataSource.deleteFavouriteMovie(movie = movie.toMovieResponse())
+    }
 }

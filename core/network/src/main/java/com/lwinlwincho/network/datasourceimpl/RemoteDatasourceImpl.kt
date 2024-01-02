@@ -47,9 +47,7 @@ class RemoteDatasourceImpl @Inject constructor(
 
     override fun getMovieCredits(movieId: Int): Flow<CreditResponse> {
         return flow {
-            val credit = movieAPIService.getCredits(movieId)
-            Log.d("cast", "Movie credit cast $credit")
-            emit(credit)
+            emit(movieAPIService.getCredits(movieId))
         }
     }
 }
