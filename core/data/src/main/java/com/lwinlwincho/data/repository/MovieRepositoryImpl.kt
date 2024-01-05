@@ -60,17 +60,17 @@ class MovieRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getFavouriteById(id: Long): Flow<MovieModel> {
+    override fun getFavouriteById(id: Long): Flow<MovieModel?> {
         return localDataSource.getFavouriteById(id).map {
-            it!!.toMovieModel()
+            it?.toMovieModel()
         }
     }
 
-    override suspend fun insertFavouriteMovie(movie: MovieModel) {
-        localDataSource.insertFavouriteMovie(movie = movie.toMovieResponse())
+    override suspend fun insertFavouriteMovie(movie: MovieDetailModel) {
+        movie.toMovieResponse()?.let { localDataSource.insertFavouriteMovie(movie = it) }
     }
 
-    override suspend fun deleteFavouriteMovie(movie: MovieModel) {
-        localDataSource.deleteFavouriteMovie(movie = movie.toMovieResponse())
+    override suspend fun deleteFavouriteMovie(movie: MovieDetailModel) {
+        movie.toMovieResponse()?.let { localDataSource.deleteFavouriteMovie(movie = it) }
     }
 }

@@ -21,9 +21,9 @@ interface MovieRepository {
 
     fun getAllFavouriteMovies():Flow<List<MovieModel>>
 
-    fun getFavouriteById(id: Long):Flow<MovieModel>
+    fun getFavouriteById(id: Long):Flow<MovieModel?>
 
-    suspend fun insertFavouriteMovie(movie:MovieModel)
+    suspend fun insertFavouriteMovie(movie:MovieDetailModel)
 
-    suspend fun deleteFavouriteMovie(movie:MovieModel)
+    suspend fun deleteFavouriteMovie(movie:MovieDetailModel)
 }

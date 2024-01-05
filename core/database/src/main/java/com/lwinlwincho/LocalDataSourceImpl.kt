@@ -29,7 +29,7 @@ class LocalDataSourceImpl @Inject constructor(private val movieDao: MovieDao) : 
 
     override fun getFavouriteById(id: Long): Flow<MovieResponse?> {
         return movieDao.getMovieById(id).map {
-            it!!.toMovieResponse()
+            it?.toMovieResponse()
         }
     }
 

@@ -3,6 +3,7 @@ package com.lwinlwincho.moviedbcompose.detail
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,6 +20,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -40,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.layoutId
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lwinlwincho.domain.remoteModel.CastModel
 import com.lwinlwincho.domain.remoteModel.CreditModel
 import com.lwinlwincho.domain.remoteModel.GenreModel
@@ -47,6 +52,7 @@ import com.lwinlwincho.domain.remoteModel.MovieDetailModel
 import com.lwinlwincho.moviedbcompose.Loading
 import com.lwinlwincho.moviedbcompose.R
 import com.lwinlwincho.moviedbcompose.asyncImage
+import com.lwinlwincho.moviedbcompose.home.HomeEvent
 import com.lwinlwincho.moviedbcompose.toHourMinute
 import com.lwinlwincho.moviedbcompose.ui.theme.MovieDBComposeTheme
 
@@ -56,13 +62,40 @@ fun DetailScreen() {
 
     val detailUiState by viewModel.detailUiState.collectAsState()
     val castUiState by viewModel.castUiState.collectAsState()
+    val favouriteUiState by viewModel.favouriteUiState.collectAsState()
 
-    DetailContent(detailUiState = detailUiState, castUiState = castUiState)
+    //can save value either remember or viewmodel
+    // val isFavourite by remember { mutableStateOf(false) }
 
+    DetailContent(
+        detailUiState = detailUiState,
+        castUiState = castUiState,
+        favouriteUiState = favouriteUiState,
+        isFavourite = viewModel.isFavourite,
+        onEvent = { event ->
+            when (event) {
+                is HomeEvent.OnFavouriteEvent -> {
+                    viewModel.toggleFavourite(event.movieModel)
+
+                    //can save value either remember or viewmodel
+                    //isFavourite = event.isFavourite
+                    viewModel.isFavourite = event.isFavourite
+                }
+            }
+        }
+    )
+
+    viewModel.checkIsFavourite(detailUiState.movieDetailModel)
 }
 
 @Composable
-fun DetailContent(detailUiState: MovieDetailUiState, castUiState: MovieDetailUiState) {
+fun DetailContent(
+    detailUiState: MovieDetailUiState,
+    castUiState: MovieDetailUiState,
+    favouriteUiState: MovieDetailUiState,
+    isFavourite: Boolean,
+    onEvent: (HomeEvent) -> Unit
+) {
 
     Column(
         modifier = Modifier
@@ -77,12 +110,24 @@ fun DetailContent(detailUiState: MovieDetailUiState, castUiState: MovieDetailUiS
 
         if (detailUiState.movieDetailModel.id.toInt() != 0) {
 
-            DetailHeaderSession(detailUiState)
+            DetailHeaderSession(detailUiState, isFavourite, onEvent = onEvent)
             DetailStarRate(detailUiState)
             DetailGenre(detailUiState)
             DetailLength(detailUiState)
             DetailDescriptionSession(detailUiState)
         }
+
+        /* if(favouriteUiState.isFavourite){
+             Toast.makeText(
+                 LocalContext.current, favouriteUiState.successAdded, Toast.LENGTH_SHORT
+             ).show()
+         }
+
+         if(!favouriteUiState.isFavourite){
+             Toast.makeText(
+                 LocalContext.current, favouriteUiState.successRemoved, Toast.LENGTH_SHORT
+             ).show()
+         }*/
 
         if (castUiState.creditModel.cast.isNotEmpty()) {
             CastSession(castUiState)
@@ -97,7 +142,11 @@ fun DetailContent(detailUiState: MovieDetailUiState, castUiState: MovieDetailUiS
 }
 
 @Composable
-fun DetailHeaderSession(detailUiState: MovieDetailUiState) {
+fun DetailHeaderSession(
+    detailUiState: MovieDetailUiState,
+    isFavourite: Boolean,
+    onEvent: (HomeEvent) -> Unit
+) {
 
     var isError by remember { mutableStateOf(false) }
     val placeholder = painterResource(id = R.drawable.dummy)
@@ -131,16 +180,51 @@ fun DetailHeaderSession(detailUiState: MovieDetailUiState) {
             }
         )
 
-        Image(
-            painter = painterResource(id = R.drawable.ic_save),
-            contentDescription = null,
+        /* Image(
+             painter = painterResource(
+                 id = if (favouriteUiState.isFavourite) {
+                     R.drawable.ic_save
+                 } else R.drawable.ic_unsave
+             ),
+             contentDescription = null,
+             modifier = Modifier
+                 .constrainAs(imgSave) {
+                     end.linkTo(parent.end)
+                     top.linkTo(parent.top)
+                 }
+                 .padding(end = 24.dp)
+                 .clickable {
+                     onEvent(HomeEvent.ToggleFavouriteMovie(movieModel = detailUiState.movieDetailModel))
+                 }
+         )*/
+
+        IconToggleButton(
+            checked = isFavourite,
+            onCheckedChange = {
+                onEvent(
+                    HomeEvent.OnFavouriteEvent(
+                        isFavourite = !isFavourite,
+                        movieModel = detailUiState.movieDetailModel
+                    )
+                )
+            },
             modifier = Modifier
                 .constrainAs(imgSave) {
                     end.linkTo(parent.end)
                     top.linkTo(parent.top)
                 }
                 .padding(end = 24.dp)
-        )
+        ) {
+            Icon(
+                painter = painterResource(
+                    id = if (isFavourite)
+                        R.drawable.ic_save
+                    else
+                        R.drawable.ic_unsave
+                ),
+                contentDescription = null
+            )
+        }
 
         Image(
             painter = if (isError.not() && !isLocalInspection) asyncImage(detailUiState.movieDetailModel.backdropPath) else placeholder,
@@ -184,6 +268,38 @@ fun DetailHeaderSession(detailUiState: MovieDetailUiState) {
                 .padding(start = 12.dp, top = 12.dp),
             minLines = 2,
             style = MaterialTheme.typography.displayMedium)
+    }
+}
+
+@Composable
+fun FavouriteButton(isFavourite: Boolean, onFavouriteEvent: (Boolean) -> Unit, modifier: Modifier) {
+
+    /* var isFavourite by remember { mutableStateOf(false) }
+
+     IconToggleButton(
+         checked = isFavourite,
+         onCheckedChange = { isFavourite = !isFavourite }
+     ) {
+         Icon(
+             painter = painterResource(id = if (isFavourite) R.drawable.ic_save else R.drawable.ic_unsave),
+             contentDescription = null
+         )
+     }*/
+
+    // var isFavourite by remember { mutableStateOf(false) }
+
+    IconToggleButton(
+        checked = isFavourite,
+        onCheckedChange = { onFavouriteEvent(!isFavourite) },
+        modifier = modifier.graphicsLayer {
+            scaleX = 1.3f
+            scaleY = 1.3f
+        }
+    ) {
+        Icon(
+            painter = painterResource(id = if (isFavourite) R.drawable.ic_save else R.drawable.ic_unsave),
+            contentDescription = null
+        )
     }
 }
 
@@ -411,7 +527,21 @@ fun DetailContentPreview() {
                         CastModel(4, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg")
                     )
                 )
-            )
+            ),
+            favouriteUiState = MovieDetailUiState(
+                loading = false,
+                creditModel = CreditModel(
+                    609681,
+                    listOf(
+                        CastModel(1, "James", "John", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg"),
+                        CastModel(2, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg"),
+                        CastModel(3, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg"),
+                        CastModel(4, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg")
+                    )
+                )
+            ),
+            isFavourite = true,
+            onEvent = {}
         )
     }
 }

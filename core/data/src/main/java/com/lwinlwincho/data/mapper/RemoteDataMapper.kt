@@ -37,6 +37,18 @@ fun MovieModel.toMovieResponse(): MovieResponse {
     )
 }
 
+fun MovieDetailModel.toMovieResponse(): MovieResponse? {
+    return releaseDate?.let {
+        MovieResponse(
+            id = id.toInt(),
+            posterPath = posterPath,
+            title = title,
+            releaseDate = it,
+            voteAverage = voteAverage
+        )
+    }
+}
+
 fun List<MovieModel>.toMovieResponseList(): List<MovieResponse> {
     return this.map {
         it.toMovieResponse()

@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lwinlwincho.domain.remoteModel.CreditModel
 import com.lwinlwincho.domain.remoteModel.MovieDetailModel
+import com.lwinlwincho.domain.remoteModel.MovieModel
 import com.lwinlwincho.domain.repository.MovieRepository
+import com.lwinlwincho.moviedbcompose.favourite.FavouriteUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,10 +32,16 @@ class MovieDetailViewModel @Inject constructor(
     private var _castUiState = MutableStateFlow(MovieDetailUiState())
     val castUiState: StateFlow<MovieDetailUiState> = _castUiState.asStateFlow()
 
+    private var _favouriteUiState = MutableStateFlow(MovieDetailUiState())
+    val favouriteUiState: StateFlow<MovieDetailUiState> = _favouriteUiState.asStateFlow()
+
+    var isFavourite = false
+
     init {
         getMovieDetail(movieId = movieId)
         getMovieCredit(movieId = movieId)
     }
+
     private fun getMovieDetail(movieId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             movieRepository.getMovieDetail(movieId)
@@ -42,7 +50,8 @@ class MovieDetailViewModel @Inject constructor(
                         MovieDetailUiState(error = it.message.toString(), loading = false)
                 }
                 .collectLatest {
-                    _detailUiState.value = MovieDetailUiState(movieDetailModel = it, loading = false)
+                    _detailUiState.value =
+                        MovieDetailUiState(movieDetailModel = it, loading = false)
                 }
         }
     }
@@ -57,6 +66,53 @@ class MovieDetailViewModel @Inject constructor(
                 .collectLatest {
                     _castUiState.value = MovieDetailUiState(creditModel = it, loading = false)
                 }
+        }
+    }
+
+    fun checkIsFavourite(movieModel: MovieDetailModel) {
+        viewModelScope.launch {
+            movieRepository.getFavouriteById(movieModel.id).collectLatest {
+                _favouriteUiState.value =
+                    MovieDetailUiState(isFavourite = it?.id == movieModel.id.toInt())
+            }
+        }
+    }
+
+    fun toggleFavourite(movieModel: MovieDetailModel) {
+        viewModelScope.launch {
+            movieRepository.getFavouriteById(movieModel.id).collectLatest {
+                if (it?.id == movieModel.id.toInt()) {
+                    removeFavouriteMovie(movieModel)
+                } else {
+                    addFavouriteMovie(movieModel)
+                }
+            }
+        }
+    }
+
+    private fun addFavouriteMovie(movieModel: MovieDetailModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                movieRepository.insertFavouriteMovie(movieModel)
+                _favouriteUiState.value =
+                    MovieDetailUiState(successAdded = "Added Bookmark!")
+            } catch (e: Exception) {
+                _favouriteUiState.value =
+                    MovieDetailUiState(error = e.message.toString(), loading = false)
+            }
+        }
+    }
+
+    private fun removeFavouriteMovie(movieModel: MovieDetailModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                movieRepository.deleteFavouriteMovie(movieModel)
+                _favouriteUiState.value =
+                    MovieDetailUiState(successRemoved = "Removed Bookmark!")
+            } catch (e: Exception) {
+                _favouriteUiState.value =
+                    MovieDetailUiState(error = e.message.toString(), loading = false)
+            }
         }
     }
 }
@@ -85,6 +141,9 @@ data class MovieDetailUiState(
         0.0
     ),
     val creditModel: CreditModel = CreditModel(0, emptyList()),
+    val isFavourite: Boolean = false,
+    val successAdded: String = "",
+    val successRemoved: String = "",
     val error: String = "",
     val loading: Boolean = true
 )
