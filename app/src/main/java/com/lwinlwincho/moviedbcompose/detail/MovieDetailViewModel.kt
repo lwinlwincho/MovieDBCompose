@@ -141,7 +141,7 @@ data class MovieDetailUiState(
         0.0
     ),
     val creditModel: CreditModel = CreditModel(0, emptyList()),
-    val isFavourite: Boolean = false,
+    var isFavourite: Boolean = false,
     val successAdded: String = "",
     val successRemoved: String = "",
     val error: String = "",

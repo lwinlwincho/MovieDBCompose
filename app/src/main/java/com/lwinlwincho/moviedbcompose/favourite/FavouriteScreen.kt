@@ -46,13 +46,15 @@ fun FavouriteScreen(
         ).show()
     }
 
-    FavouriteContent(favouriteUiState, onEvent = {
-        when (it) {
-            is HomeEvent.GoToDetails -> {
-                navController.navigate("detail/" + it.movieId)
+    if(favouriteUiState.favouriteMovies.isNotEmpty()) {
+        FavouriteContent(favouriteUiState, onEvent = {
+            when (it) {
+                is HomeEvent.GoToDetails -> {
+                    navController.navigate("detail/" + it.movieId)
+                }
             }
-        }
-    })
+        })
+    }
 }
 
 @Composable
@@ -63,18 +65,23 @@ fun FavouriteContent(
     Row {
         Image(
             painter = painterResource(id = R.drawable.ic_back),
-            contentDescription =null
+            contentDescription = null
         )
         Text(text = "Favourite")
     }
 
-    LazyVerticalGrid(columns = GridCells.Fixed(count = 2), content = {
-        items(items = favouriteUiState.favouriteMovies,
-            key = { it.id },
-            contentType = { "MovieItem" }) { movie ->
-            MovieItem(movie = movie, onEvent = onEvent)
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(count = 2),
+        content = {
+            items(
+                items = favouriteUiState.favouriteMovies,
+                key = { it.id },
+                contentType = { "MovieItem" }
+            ) { movie ->
+                MovieItem(movie = movie, onEvent = onEvent)
+            }
         }
-    })
+    )
 }
 
 @Preview

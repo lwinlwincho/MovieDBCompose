@@ -71,7 +71,6 @@ fun DetailScreen() {
         detailUiState = detailUiState,
         castUiState = castUiState,
         favouriteUiState = favouriteUiState,
-        isFavourite = viewModel.isFavourite,
         onEvent = { event ->
             when (event) {
                 is HomeEvent.OnFavouriteEvent -> {
@@ -79,7 +78,8 @@ fun DetailScreen() {
 
                     //can save value either remember or viewmodel
                     //isFavourite = event.isFavourite
-                    viewModel.isFavourite = event.isFavourite
+                    favouriteUiState.isFavourite = event.isFavourite
+                  //  viewModel.isFavourite = event.isFavourite
                 }
             }
         }
@@ -93,7 +93,6 @@ fun DetailContent(
     detailUiState: MovieDetailUiState,
     castUiState: MovieDetailUiState,
     favouriteUiState: MovieDetailUiState,
-    isFavourite: Boolean,
     onEvent: (HomeEvent) -> Unit
 ) {
 
@@ -110,7 +109,7 @@ fun DetailContent(
 
         if (detailUiState.movieDetailModel.id.toInt() != 0) {
 
-            DetailHeaderSession(detailUiState, isFavourite, onEvent = onEvent)
+            DetailHeaderSession(detailUiState, favouriteUiState.isFavourite, onEvent = onEvent)
             DetailStarRate(detailUiState)
             DetailGenre(detailUiState)
             DetailLength(detailUiState)
@@ -271,37 +270,6 @@ fun DetailHeaderSession(
     }
 }
 
-@Composable
-fun FavouriteButton(isFavourite: Boolean, onFavouriteEvent: (Boolean) -> Unit, modifier: Modifier) {
-
-    /* var isFavourite by remember { mutableStateOf(false) }
-
-     IconToggleButton(
-         checked = isFavourite,
-         onCheckedChange = { isFavourite = !isFavourite }
-     ) {
-         Icon(
-             painter = painterResource(id = if (isFavourite) R.drawable.ic_save else R.drawable.ic_unsave),
-             contentDescription = null
-         )
-     }*/
-
-    // var isFavourite by remember { mutableStateOf(false) }
-
-    IconToggleButton(
-        checked = isFavourite,
-        onCheckedChange = { onFavouriteEvent(!isFavourite) },
-        modifier = modifier.graphicsLayer {
-            scaleX = 1.3f
-            scaleY = 1.3f
-        }
-    ) {
-        Icon(
-            painter = painterResource(id = if (isFavourite) R.drawable.ic_save else R.drawable.ic_unsave),
-            contentDescription = null
-        )
-    }
-}
 
 @Composable
 fun DetailStarRate(detailUiState: MovieDetailUiState) {
@@ -540,7 +508,7 @@ fun DetailContentPreview() {
                     )
                 )
             ),
-            isFavourite = true,
+           // isFavourite = true,
             onEvent = {}
         )
     }
