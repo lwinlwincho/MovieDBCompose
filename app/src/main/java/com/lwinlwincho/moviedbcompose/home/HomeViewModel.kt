@@ -100,6 +100,6 @@ class HomeViewModel @Inject constructor(
 data class HomeUiState(
     val popularMovies: List<MovieModel> = emptyList(),
     val nowShowingMovies: List<MovieModel> = emptyList(),
-    val errorMessage: String = "Error Message",
+    val errorMessage: String = "",
     val loading: Boolean = true
 )

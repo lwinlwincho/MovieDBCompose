@@ -45,6 +45,6 @@ class FavouriteViewModel @Inject constructor(
 
 data class FavouriteUiState(
     val favouriteMovies: List<MovieModel> = emptyList(),
-    val errorMessage: String = "Error Message",
+    val errorMessage: String = "",
     val loading: Boolean = true
 )

@@ -3,7 +3,6 @@ package com.lwinlwincho.moviedbcompose.detail
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,7 +31,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -44,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.layoutId
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lwinlwincho.domain.remoteModel.CastModel
 import com.lwinlwincho.domain.remoteModel.CreditModel
 import com.lwinlwincho.domain.remoteModel.GenreModel
@@ -60,39 +57,26 @@ import com.lwinlwincho.moviedbcompose.ui.theme.MovieDBComposeTheme
 fun DetailScreen() {
     val viewModel: MovieDetailViewModel = hiltViewModel()
 
-    val detailUiState by viewModel.detailUiState.collectAsState()
-    val castUiState by viewModel.castUiState.collectAsState()
-    val favouriteUiState by viewModel.favouriteUiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     //can save value either remember or viewmodel
     // val isFavourite by remember { mutableStateOf(false) }
 
     DetailContent(
-        detailUiState = detailUiState,
-        castUiState = castUiState,
-        favouriteUiState = favouriteUiState,
+        uiState = uiState,
         onEvent = { event ->
             when (event) {
                 is HomeEvent.OnFavouriteEvent -> {
-                    viewModel.toggleFavourite(event.movieModel)
-
-                    //can save value either remember or viewmodel
-                    //isFavourite = event.isFavourite
-                    favouriteUiState.isFavourite = event.isFavourite
-                  //  viewModel.isFavourite = event.isFavourite
+                    viewModel.toggleFavourite()
                 }
             }
         }
     )
-
-    viewModel.checkIsFavourite(detailUiState.movieDetailModel)
 }
 
 @Composable
 fun DetailContent(
-    detailUiState: MovieDetailUiState,
-    castUiState: MovieDetailUiState,
-    favouriteUiState: MovieDetailUiState,
+    uiState: MovieDetailUiState,
     onEvent: (HomeEvent) -> Unit
 ) {
 
@@ -103,47 +87,47 @@ fun DetailContent(
             .verticalScroll(rememberScrollState()),
     ) {
 
-        if (detailUiState.loading) {
-            Loading()
+        if (uiState.loading) Loading()
+
+        if (uiState.movieDetailModel.id.toInt() != 0) {
+
+            DetailHeaderSession(
+                isFavourite = uiState.isFavourite,
+                movieDetailModel = uiState.movieDetailModel,
+                onEvent = onEvent
+            )
+            DetailStarRate(movieDetailModel = uiState.movieDetailModel)
+            DetailGenre(genres = uiState.movieDetailModel.genres)
+            DetailLength(movieDetailModel = uiState.movieDetailModel)
+            DetailDescriptionSession(overview = uiState.movieDetailModel.overview)
         }
 
-        if (detailUiState.movieDetailModel.id.toInt() != 0) {
-
-            DetailHeaderSession(detailUiState, favouriteUiState.isFavourite, onEvent = onEvent)
-            DetailStarRate(detailUiState)
-            DetailGenre(detailUiState)
-            DetailLength(detailUiState)
-            DetailDescriptionSession(detailUiState)
-        }
-
-        /* if(favouriteUiState.isFavourite){
+        /* if(favouriteisFavourite){
              Toast.makeText(
                  LocalContext.current, favouriteUiState.successAdded, Toast.LENGTH_SHORT
              ).show()
          }
 
-         if(!favouriteUiState.isFavourite){
+         if(!favouriteisFavourite){
              Toast.makeText(
                  LocalContext.current, favouriteUiState.successRemoved, Toast.LENGTH_SHORT
              ).show()
          }*/
 
-        if (castUiState.creditModel.cast.isNotEmpty()) {
-            CastSession(castUiState)
+        if (uiState.creditModel.cast.isNotEmpty()) {
+            CastSession(uiState.creditModel.cast)
         }
 
-        if (detailUiState.error.isNotEmpty()) {
-            Toast.makeText(
-                LocalContext.current, detailUiState.error, Toast.LENGTH_SHORT
-            ).show()
+        if (uiState.error.isNotEmpty()) {
+            Toast.makeText(LocalContext.current, uiState.error, Toast.LENGTH_SHORT).show()
         }
     }
 }
 
 @Composable
 fun DetailHeaderSession(
-    detailUiState: MovieDetailUiState,
     isFavourite: Boolean,
+    movieDetailModel: MovieDetailModel,
     onEvent: (HomeEvent) -> Unit
 ) {
 
@@ -181,7 +165,7 @@ fun DetailHeaderSession(
 
         /* Image(
              painter = painterResource(
-                 id = if (favouriteUiState.isFavourite) {
+                 id = if (favouriteisFavourite) {
                      R.drawable.ic_save
                  } else R.drawable.ic_unsave
              ),
@@ -193,19 +177,14 @@ fun DetailHeaderSession(
                  }
                  .padding(end = 24.dp)
                  .clickable {
-                     onEvent(HomeEvent.ToggleFavouriteMovie(movieModel = detailUiState.movieDetailModel))
+                     onEvent(HomeEvent.ToggleFavouriteMovie(movieModel = movieDetailModel))
                  }
          )*/
 
         IconToggleButton(
             checked = isFavourite,
             onCheckedChange = {
-                onEvent(
-                    HomeEvent.OnFavouriteEvent(
-                        isFavourite = !isFavourite,
-                        movieModel = detailUiState.movieDetailModel
-                    )
-                )
+                onEvent(HomeEvent.OnFavouriteEvent)
             },
             modifier = Modifier
                 .constrainAs(imgSave) {
@@ -226,8 +205,8 @@ fun DetailHeaderSession(
         }
 
         Image(
-            painter = if (isError.not() && !isLocalInspection) asyncImage(detailUiState.movieDetailModel.backdropPath) else placeholder,
-            contentDescription = detailUiState.movieDetailModel.id.toString(),
+            painter = if (isError.not() && !isLocalInspection) asyncImage(movieDetailModel.backdropPath) else placeholder,
+            contentDescription = movieDetailModel.id.toString(),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .constrainAs(movieCover) {
@@ -249,14 +228,14 @@ fun DetailHeaderSession(
             .padding(start = 24.dp)
         ) {
             Image(
-                painter = if (isError.not() && !isLocalInspection) asyncImage(detailUiState.movieDetailModel.posterPath) else placeholder,
-                contentDescription = detailUiState.movieDetailModel.id.toString(),
+                painter = if (isError.not() && !isLocalInspection) asyncImage(movieDetailModel.posterPath) else placeholder,
+                contentDescription = movieDetailModel.id.toString(),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
         }
 
-        Text(text = detailUiState.movieDetailModel.title,
+        Text(text = movieDetailModel.title,
             modifier = Modifier
                 .constrainAs(movieName) {
                     top.linkTo(movieCover.bottom)
@@ -272,7 +251,7 @@ fun DetailHeaderSession(
 
 
 @Composable
-fun DetailStarRate(detailUiState: MovieDetailUiState) {
+fun DetailStarRate(movieDetailModel: MovieDetailModel) {
 
     Row(
         modifier = Modifier
@@ -284,7 +263,7 @@ fun DetailStarRate(detailUiState: MovieDetailUiState) {
         )
 
         Text(
-            text = stringResource(R.string.start_rate, detailUiState.movieDetailModel.voteAverage),
+            text = stringResource(R.string.start_rate, movieDetailModel.voteAverage),
             modifier = Modifier
                 .wrapContentSize()
                 .padding(start = 4.dp),
@@ -295,12 +274,12 @@ fun DetailStarRate(detailUiState: MovieDetailUiState) {
 }
 
 @Composable
-fun DetailGenre(detailUiState: MovieDetailUiState) {
+fun DetailGenre(genres: List<GenreModel>) {
     LazyRow(
         contentPadding = PaddingValues(top = 16.dp, start = 24.dp, end = 24.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(detailUiState.movieDetailModel.genres) {
+        items(genres) {
             Text(
                 text = it.name,
                 modifier = Modifier
@@ -315,7 +294,7 @@ fun DetailGenre(detailUiState: MovieDetailUiState) {
 }
 
 @Composable
-fun DetailLength(detailUiState: MovieDetailUiState) {
+fun DetailLength(movieDetailModel: MovieDetailModel) {
 
     Row(
         modifier = Modifier
@@ -333,7 +312,7 @@ fun DetailLength(detailUiState: MovieDetailUiState) {
             )
 
             Text(
-                text = detailUiState.movieDetailModel.runtime.toHourMinute(),
+                text = movieDetailModel.runtime.toHourMinute(),
                 modifier = Modifier.padding(top = 4.dp),
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.labelLarge
@@ -350,13 +329,13 @@ fun DetailLength(detailUiState: MovieDetailUiState) {
             )
 
             Text(
-                text = when (detailUiState.movieDetailModel.originalLanguage) {
+                text = when (movieDetailModel.originalLanguage) {
                     "en" -> "English"
                     "ko" -> "Korea"
                     "ja" -> "Japan"
                     "fr" -> "France"
                     "ch" -> "China"
-                    else -> detailUiState.movieDetailModel.originalLanguage
+                    else -> movieDetailModel.originalLanguage
                 },
                 modifier = Modifier.padding(top = 4.dp),
                 color = MaterialTheme.colorScheme.secondary,
@@ -374,7 +353,7 @@ fun DetailLength(detailUiState: MovieDetailUiState) {
             )
 
             Text(
-                text = (detailUiState.movieDetailModel.voteAverage / 2).toString(),
+                text = (movieDetailModel.voteAverage / 2).toString(),
                 modifier = Modifier.padding(top = 4.dp),
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.labelLarge
@@ -384,7 +363,7 @@ fun DetailLength(detailUiState: MovieDetailUiState) {
 }
 
 @Composable
-fun DetailDescriptionSession(detailUiState: MovieDetailUiState) {
+fun DetailDescriptionSession(overview: String) {
     Text(
         text = "Description",
         modifier = Modifier
@@ -396,7 +375,7 @@ fun DetailDescriptionSession(detailUiState: MovieDetailUiState) {
     )
 
     Text(
-        text = detailUiState.movieDetailModel.overview,
+        text = overview,
         textAlign = TextAlign.Justify,
         modifier = Modifier
             .wrapContentSize()
@@ -408,7 +387,7 @@ fun DetailDescriptionSession(detailUiState: MovieDetailUiState) {
 }
 
 @Composable
-fun CastSession(castUiState: MovieDetailUiState) {
+fun CastSession(cast: List<CastModel>) {
 
     var isError by remember { mutableStateOf(false) }
     val placeholder = painterResource(id = R.drawable.dummy)
@@ -427,7 +406,7 @@ fun CastSession(castUiState: MovieDetailUiState) {
         contentPadding = PaddingValues(end = 24.dp, start = 24.dp, top = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(castUiState.creditModel.cast) { item ->
+        items(cast) { item ->
 
             Column {
                 /*Card(
@@ -462,7 +441,7 @@ fun CastSession(castUiState: MovieDetailUiState) {
 fun DetailContentPreview() {
     MovieDBComposeTheme {
         DetailContent(
-            detailUiState = MovieDetailUiState(
+            uiState = MovieDetailUiState(
                 loading = false,
                 movieDetailModel = MovieDetailModel(
                     "/feSiISwgEpVzR1v3zv2n2AU4ANJ.jpg",
@@ -482,10 +461,7 @@ fun DetailContentPreview() {
                     105,
                     "Spiderman No Way Home",
                     6.401
-                )
-            ),
-            castUiState = MovieDetailUiState(
-                loading = false,
+                ),
                 creditModel = CreditModel(
                     609681,
                     listOf(
@@ -494,21 +470,9 @@ fun DetailContentPreview() {
                         CastModel(3, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg"),
                         CastModel(4, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg")
                     )
-                )
+                ),
+                isFavourite = true,
             ),
-            favouriteUiState = MovieDetailUiState(
-                loading = false,
-                creditModel = CreditModel(
-                    609681,
-                    listOf(
-                        CastModel(1, "James", "John", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg"),
-                        CastModel(2, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg"),
-                        CastModel(3, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg"),
-                        CastModel(4, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg")
-                    )
-                )
-            ),
-           // isFavourite = true,
             onEvent = {}
         )
     }
