@@ -99,7 +99,7 @@ fun MainScreen() {
                     route = MovieScreenRoute.Detail.route,
                     arguments = listOf(navArgument("movieId") { type = NavType.IntType })
                 ) {
-                    DetailScreen()
+                    DetailScreen(onBack = { navController.navigateUp() })
                 }
             }
         }

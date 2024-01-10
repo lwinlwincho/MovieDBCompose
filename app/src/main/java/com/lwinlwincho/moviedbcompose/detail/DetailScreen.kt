@@ -3,6 +3,7 @@ package com.lwinlwincho.moviedbcompose.detail
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,11 +19,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -54,7 +62,9 @@ import com.lwinlwincho.moviedbcompose.toHourMinute
 import com.lwinlwincho.moviedbcompose.ui.theme.MovieDBComposeTheme
 
 @Composable
-fun DetailScreen() {
+fun DetailScreen(
+    onBack: () -> Unit,
+) {
     val viewModel: MovieDetailViewModel = hiltViewModel()
 
     val uiState by viewModel.uiState.collectAsState()
@@ -69,67 +79,88 @@ fun DetailScreen() {
                 is HomeEvent.OnFavouriteEvent -> {
                     viewModel.toggleFavourite()
                 }
+
+                is HomeEvent.Back -> {
+                    onBack()
+                }
             }
         }
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailContent(
     uiState: MovieDetailUiState,
     onEvent: (HomeEvent) -> Unit
 ) {
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 20.dp, top = 20.dp)
-            .verticalScroll(rememberScrollState()),
-    ) {
-
-        if (uiState.loading) Loading()
-
-        if (uiState.movieDetailModel.id.toInt() != 0) {
-
-            DetailHeaderSession(
-                isFavourite = uiState.isFavourite,
-                movieDetailModel = uiState.movieDetailModel,
-                onEvent = onEvent
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = "Details",
+                        style = MaterialTheme.typography.displayMedium
+                    )
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = { onEvent(HomeEvent.Back) },
+                        modifier = Modifier
+                            .clickable { onEvent(HomeEvent.Back) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = null
+                        )
+                    }
+                },
+                actions = {
+                    IconToggleButton(
+                        checked = uiState.isFavourite,
+                        onCheckedChange = { onEvent(HomeEvent.OnFavouriteEvent) }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = if (uiState.isFavourite) R.drawable.ic_save else R.drawable.ic_unsave),
+                            contentDescription = null
+                        )
+                    }
+                }
             )
-            DetailStarRate(movieDetailModel = uiState.movieDetailModel)
-            DetailGenre(genres = uiState.movieDetailModel.genres)
-            DetailLength(movieDetailModel = uiState.movieDetailModel)
-            DetailDescriptionSession(overview = uiState.movieDetailModel.overview)
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+        ) {
+
+            if (uiState.loading) Loading()
+
+            if (uiState.movieDetailModel.id.toInt() != 0) {
+                DetailHeaderSession(movieDetailModel = uiState.movieDetailModel)
+                DetailStarRate(movieDetailModel = uiState.movieDetailModel)
+                DetailGenre(genres = uiState.movieDetailModel.genres)
+                DetailLength(movieDetailModel = uiState.movieDetailModel)
+                DetailDescriptionSession(overview = uiState.movieDetailModel.overview)
+            }
+            if (uiState.creditModel.cast.isNotEmpty()) {
+                CastSession(uiState.creditModel.cast)
+            }
+            if (uiState.error.isNotEmpty()) {
+                Toast.makeText(LocalContext.current, uiState.error, Toast.LENGTH_SHORT).show()
+            }
         }
 
-        /* if(favouriteisFavourite){
-             Toast.makeText(
-                 LocalContext.current, favouriteUiState.successAdded, Toast.LENGTH_SHORT
-             ).show()
-         }
-
-         if(!favouriteisFavourite){
-             Toast.makeText(
-                 LocalContext.current, favouriteUiState.successRemoved, Toast.LENGTH_SHORT
-             ).show()
-         }*/
-
-        if (uiState.creditModel.cast.isNotEmpty()) {
-            CastSession(uiState.creditModel.cast)
-        }
-
-        if (uiState.error.isNotEmpty()) {
-            Toast.makeText(LocalContext.current, uiState.error, Toast.LENGTH_SHORT).show()
-        }
     }
+
+
 }
 
 @Composable
-fun DetailHeaderSession(
-    isFavourite: Boolean,
-    movieDetailModel: MovieDetailModel,
-    onEvent: (HomeEvent) -> Unit
-) {
+fun DetailHeaderSession(movieDetailModel: MovieDetailModel) {
 
     var isError by remember { mutableStateOf(false) }
     val placeholder = painterResource(id = R.drawable.dummy)
@@ -140,69 +171,7 @@ fun DetailHeaderSession(
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
-
-        val (imgBack, tvDetail, imgSave, movieCover, moviePoster, movieName) = createRefs()
-
-        Image(
-            painter = painterResource(id = R.drawable.ic_back),
-            contentDescription = null,
-            modifier = Modifier
-                .constrainAs(imgBack) {
-                    start.linkTo(parent.start)
-                }
-                .padding(start = 24.dp)
-        )
-
-        Text(
-            text = "Details",
-            style = MaterialTheme.typography.displayMedium,
-            modifier = Modifier.constrainAs(tvDetail) {
-                start.linkTo(imgBack.end)
-                end.linkTo(imgSave.start)
-                top.linkTo(parent.top)
-            }
-        )
-
-        /* Image(
-             painter = painterResource(
-                 id = if (favouriteisFavourite) {
-                     R.drawable.ic_save
-                 } else R.drawable.ic_unsave
-             ),
-             contentDescription = null,
-             modifier = Modifier
-                 .constrainAs(imgSave) {
-                     end.linkTo(parent.end)
-                     top.linkTo(parent.top)
-                 }
-                 .padding(end = 24.dp)
-                 .clickable {
-                     onEvent(HomeEvent.ToggleFavouriteMovie(movieModel = movieDetailModel))
-                 }
-         )*/
-
-        IconToggleButton(
-            checked = isFavourite,
-            onCheckedChange = {
-                onEvent(HomeEvent.OnFavouriteEvent)
-            },
-            modifier = Modifier
-                .constrainAs(imgSave) {
-                    end.linkTo(parent.end)
-                    top.linkTo(parent.top)
-                }
-                .padding(end = 24.dp)
-        ) {
-            Icon(
-                painter = painterResource(
-                    id = if (isFavourite)
-                        R.drawable.ic_save
-                    else
-                        R.drawable.ic_unsave
-                ),
-                contentDescription = null
-            )
-        }
+        val (tvDetail, imgSave, movieCover, moviePoster, movieName) = createRefs()
 
         Image(
             painter = if (isError.not() && !isLocalInspection) asyncImage(movieDetailModel.backdropPath) else placeholder,
@@ -215,17 +184,17 @@ fun DetailHeaderSession(
                     top.linkTo(tvDetail.bottom)
                 }
                 .aspectRatio(25f / 14f)
-                .padding(top = 16.dp)
         )
 
-        Card(modifier = Modifier
-            .constrainAs(moviePoster) {
-                start.linkTo(parent.start)
-                bottom.linkTo(movieName.bottom)
-            }
-            .fillMaxWidth(.3f)
-            .aspectRatio(19f / 24f)
-            .padding(start = 24.dp)
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(.3f)
+                .aspectRatio(19f / 24f)
+                .padding(start = 24.dp)
+                .constrainAs(moviePoster) {
+                    start.linkTo(parent.start)
+                    bottom.linkTo(movieName.bottom)
+                }
         ) {
             Image(
                 painter = if (isError.not() && !isLocalInspection) asyncImage(movieDetailModel.posterPath) else placeholder,
@@ -254,8 +223,7 @@ fun DetailHeaderSession(
 fun DetailStarRate(movieDetailModel: MovieDetailModel) {
 
     Row(
-        modifier = Modifier
-            .padding(top = 8.dp, start = 24.dp)
+        modifier = Modifier.padding(top = 8.dp, start = 24.dp)
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_star_rate_24),
