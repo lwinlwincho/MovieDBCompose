@@ -3,7 +3,6 @@ package com.lwinlwincho.moviedbcompose.detail
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -30,13 +29,11 @@ import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -68,9 +65,6 @@ fun DetailScreen(
     val viewModel: MovieDetailViewModel = hiltViewModel()
 
     val uiState by viewModel.uiState.collectAsState()
-
-    //can save value either remember or viewmodel
-    // val isFavourite by remember { mutableStateOf(false) }
 
     DetailContent(
         uiState = uiState,
@@ -107,8 +101,8 @@ fun DetailContent(
                 navigationIcon = {
                     IconButton(
                         onClick = { onEvent(HomeEvent.Back) },
-                        modifier = Modifier
-                            .clickable { onEvent(HomeEvent.Back) }
+                       /* modifier = Modifier
+                            .clickable { onEvent(HomeEvent.Back) }*/
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
@@ -141,28 +135,27 @@ fun DetailContent(
 
             if (uiState.movieDetailModel.id.toInt() != 0) {
                 DetailHeaderSession(movieDetailModel = uiState.movieDetailModel)
-                DetailStarRate(movieDetailModel = uiState.movieDetailModel)
+                DetailStarRate(voteAverage = uiState.movieDetailModel.voteAverage)
                 DetailGenre(genres = uiState.movieDetailModel.genres)
                 DetailLength(movieDetailModel = uiState.movieDetailModel)
                 DetailDescriptionSession(overview = uiState.movieDetailModel.overview)
             }
+
             if (uiState.creditModel.cast.isNotEmpty()) {
                 CastSession(uiState.creditModel.cast)
             }
+
             if (uiState.error.isNotEmpty()) {
                 Toast.makeText(LocalContext.current, uiState.error, Toast.LENGTH_SHORT).show()
             }
         }
-
     }
-
-
 }
 
 @Composable
 fun DetailHeaderSession(movieDetailModel: MovieDetailModel) {
 
-    var isError by remember { mutableStateOf(false) }
+    val isError by remember { mutableStateOf(false) }
     val placeholder = painterResource(id = R.drawable.dummy)
     val isLocalInspection = LocalInspectionMode.current
 
@@ -171,7 +164,7 @@ fun DetailHeaderSession(movieDetailModel: MovieDetailModel) {
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
-        val (tvDetail, imgSave, movieCover, moviePoster, movieName) = createRefs()
+        val (movieCover, moviePoster, movieName) = createRefs()
 
         Image(
             painter = if (isError.not() && !isLocalInspection) asyncImage(movieDetailModel.backdropPath) else placeholder,
@@ -181,7 +174,6 @@ fun DetailHeaderSession(movieDetailModel: MovieDetailModel) {
                 .constrainAs(movieCover) {
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                    top.linkTo(tvDetail.bottom)
                 }
                 .aspectRatio(25f / 14f)
         )
@@ -204,7 +196,10 @@ fun DetailHeaderSession(movieDetailModel: MovieDetailModel) {
             )
         }
 
-        Text(text = movieDetailModel.title,
+        Text(
+            text = movieDetailModel.title,
+            minLines = 2,
+            style = MaterialTheme.typography.displayMedium,
             modifier = Modifier
                 .constrainAs(movieName) {
                     top.linkTo(movieCover.bottom)
@@ -212,15 +207,14 @@ fun DetailHeaderSession(movieDetailModel: MovieDetailModel) {
                     end.linkTo(parent.end)
                 }
                 .fillMaxWidth(.7f)
-                .padding(start = 12.dp, top = 12.dp),
-            minLines = 2,
-            style = MaterialTheme.typography.displayMedium)
+                .padding(start = 12.dp, top = 12.dp)
+        )
     }
 }
 
 
 @Composable
-fun DetailStarRate(movieDetailModel: MovieDetailModel) {
+fun DetailStarRate(voteAverage: Double) {
 
     Row(
         modifier = Modifier.padding(top = 8.dp, start = 24.dp)
@@ -231,12 +225,12 @@ fun DetailStarRate(movieDetailModel: MovieDetailModel) {
         )
 
         Text(
-            text = stringResource(R.string.start_rate, movieDetailModel.voteAverage),
+            text = stringResource(R.string.start_rate, voteAverage),
+            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.labelLarge,
             modifier = Modifier
                 .wrapContentSize()
-                .padding(start = 4.dp),
-            color = MaterialTheme.colorScheme.secondary,
-            style = MaterialTheme.typography.labelLarge
+                .padding(start = 4.dp)
         )
     }
 }
@@ -357,7 +351,7 @@ fun DetailDescriptionSession(overview: String) {
 @Composable
 fun CastSession(cast: List<CastModel>) {
 
-    var isError by remember { mutableStateOf(false) }
+    val isError by remember { mutableStateOf(false) }
     val placeholder = painterResource(id = R.drawable.dummy)
     val isLocalInspection = LocalInspectionMode.current
 
