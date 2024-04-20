@@ -33,8 +33,8 @@ class HomeViewModel @Inject constructor(
         HomeUiState(
             errorMessage = errorMessage,
             loading = false,
-            popularMovies = popularMovies,
-            nowShowingMovies = nowShowingMovies
+            popularMovies = popularMovies.sortedByDescending { it.voteAverage },
+            nowShowingMovies = nowShowingMovies.sortedByDescending { it.voteAverage }
         )
     }.catch {error->
         //if it is obj,set data with ".update{}" else ".value"

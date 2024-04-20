@@ -16,7 +16,7 @@ class RemoteDatasourceImpl @Inject constructor(
 ) : RemoteDataSource {
 
     //for combine state
-    override val nowShowingMoviesFlow: Flow<BaseResponse<MovieResponse>>
+   /* override val nowShowingMoviesFlow: Flow<BaseResponse<MovieResponse>>
         get() = flow {
             emit(movieAPIService.getNowPlaying())
         }
@@ -24,7 +24,7 @@ class RemoteDatasourceImpl @Inject constructor(
     override val popularMoviesFlow: Flow<BaseResponse<MovieResponse>>
         get() = flow {
             emit(movieAPIService.getPopular())
-        }
+        }*/
 
     //for state flow
     override fun getNowPlaying(): Flow<BaseResponse<MovieResponse>> {
@@ -45,9 +45,9 @@ class RemoteDatasourceImpl @Inject constructor(
         }
     }
 
-    override fun getMovieCredits(movieId: Int): Flow<CreditResponse> {
+    /*override fun getMovieCredits(movieId: Int): Flow<CreditResponse> {
         return flow {
             emit(movieAPIService.getCredits(movieId))
         }
-    }
+    }*/
 }

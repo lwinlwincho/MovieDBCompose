@@ -24,13 +24,11 @@ class MovieDetailViewModel @Inject constructor(
 
     val uiState = combine(
         movieRepository.getMovieDetail(movieId),
-        movieRepository.getMovieCredits(movieId),
         movieRepository.getFavouriteById(movieId.toLong())
-    ) { movieDetailModel, creditModel, favouriteMovie ->
+    ) { movieDetailModel, favouriteMovie ->
         MovieDetailUiState(
             loading = false,
             movieDetailModel = movieDetailModel,
-            creditModel = creditModel,
             isFavourite = favouriteMovie?.id == movieId
         )
     }.stateIn(
@@ -85,7 +83,6 @@ data class MovieDetailUiState(
         "",
         0.0
     ),
-    val creditModel: CreditModel = CreditModel(0, emptyList()),
     val isFavourite: Boolean = false,
     val successAdded: String = "",
     val successRemoved: String = "",

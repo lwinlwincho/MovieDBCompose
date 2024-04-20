@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,7 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,13 +29,17 @@ import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -47,8 +51,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.layoutId
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.lwinlwincho.domain.remoteModel.CastModel
-import com.lwinlwincho.domain.remoteModel.CreditModel
 import com.lwinlwincho.domain.remoteModel.GenreModel
 import com.lwinlwincho.domain.remoteModel.MovieDetailModel
 import com.lwinlwincho.moviedbcompose.Loading
@@ -65,6 +67,8 @@ fun DetailScreen(
     val viewModel: MovieDetailViewModel = hiltViewModel()
 
     val uiState by viewModel.uiState.collectAsState()
+
+    if (uiState.loading) Loading()
 
     DetailContent(
         uiState = uiState,
@@ -89,20 +93,23 @@ fun DetailContent(
     onEvent: (HomeEvent) -> Unit
 ) {
 
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
                         text = "Details",
-                        style = MaterialTheme.typography.displayMedium
+                        style = MaterialTheme.typography.displayMedium,
+                        color = MaterialTheme.colorScheme.primary
                     )
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = { onEvent(HomeEvent.Back) },
-                       /* modifier = Modifier
-                            .clickable { onEvent(HomeEvent.Back) }*/
+                        onClick = { onEvent(HomeEvent.Back) }
+                        /* modifier = Modifier
+                             .clickable { onEvent(HomeEvent.Back) }*/
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
@@ -120,7 +127,8 @@ fun DetailContent(
                             contentDescription = null
                         )
                     }
-                }
+                },
+                scrollBehavior = scrollBehavior
             )
         }
     ) { innerPadding ->
@@ -131,18 +139,12 @@ fun DetailContent(
                 .verticalScroll(rememberScrollState()),
         ) {
 
-            if (uiState.loading) Loading()
-
             if (uiState.movieDetailModel.id.toInt() != 0) {
                 DetailHeaderSession(movieDetailModel = uiState.movieDetailModel)
                 DetailStarRate(voteAverage = uiState.movieDetailModel.voteAverage)
                 DetailGenre(genres = uiState.movieDetailModel.genres)
                 DetailLength(movieDetailModel = uiState.movieDetailModel)
                 DetailDescriptionSession(overview = uiState.movieDetailModel.overview)
-            }
-
-            if (uiState.creditModel.cast.isNotEmpty()) {
-                CastSession(uiState.creditModel.cast)
             }
 
             if (uiState.error.isNotEmpty()) {
@@ -178,28 +180,26 @@ fun DetailHeaderSession(movieDetailModel: MovieDetailModel) {
                 .aspectRatio(25f / 14f)
         )
 
-        Card(
+        Image(
+            painter = if (isError.not() && !isLocalInspection) asyncImage(movieDetailModel.posterPath) else placeholder,
+            contentDescription = movieDetailModel.id.toString(),
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth(.3f)
                 .aspectRatio(19f / 24f)
                 .padding(start = 24.dp)
+                .clip(shape = RoundedCornerShape(16.dp))
                 .constrainAs(moviePoster) {
                     start.linkTo(parent.start)
                     bottom.linkTo(movieName.bottom)
                 }
-        ) {
-            Image(
-                painter = if (isError.not() && !isLocalInspection) asyncImage(movieDetailModel.posterPath) else placeholder,
-                contentDescription = movieDetailModel.id.toString(),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
+        )
 
         Text(
             text = movieDetailModel.title,
             minLines = 2,
             style = MaterialTheme.typography.displayMedium,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .constrainAs(movieName) {
                     top.linkTo(movieCover.bottom)
@@ -231,6 +231,7 @@ fun DetailStarRate(voteAverage: Double) {
             modifier = Modifier
                 .wrapContentSize()
                 .padding(start = 4.dp)
+                .align(Alignment.CenterVertically)
         )
     }
 }
@@ -242,15 +243,18 @@ fun DetailGenre(genres: List<GenreModel>) {
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(genres) {
-            Text(
-                text = it.name,
+            Box(
                 modifier = Modifier
-                    .wrapContentSize()
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(MaterialTheme.colorScheme.tertiary),
-                color = MaterialTheme.colorScheme.onPrimary,
-                style = MaterialTheme.typography.labelSmall
-            )
+                    .clip(shape = RoundedCornerShape(100.dp))
+                    .background(MaterialTheme.colorScheme.tertiary)
+                    .padding(top = 4.dp, end = 12.dp, start = 12.dp, bottom = 4.dp)
+            ) {
+                Text(
+                    text = it.name,
+                    color = MaterialTheme.colorScheme.onTertiary,
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
         }
     }
 }
@@ -348,55 +352,6 @@ fun DetailDescriptionSession(overview: String) {
     )
 }
 
-@Composable
-fun CastSession(cast: List<CastModel>) {
-
-    val isError by remember { mutableStateOf(false) }
-    val placeholder = painterResource(id = R.drawable.dummy)
-    val isLocalInspection = LocalInspectionMode.current
-
-    Text(
-        text = "Cast",
-        modifier = Modifier
-            .wrapContentSize()
-            .padding(top = 24.dp, start = 24.dp),
-        color = MaterialTheme.colorScheme.secondary,
-        style = MaterialTheme.typography.headlineLarge
-    )
-
-    LazyRow(
-        contentPadding = PaddingValues(end = 24.dp, start = 24.dp, top = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        items(cast) { item ->
-
-            Column {
-                /*Card(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(6.dp))
-                        .aspectRatio(19f / 24f)
-                ) {*/
-                Image(
-                    painter = if (isError.not() && !isLocalInspection) asyncImage(item.profilePath) else placeholder,
-                    contentDescription = item.id.toString(),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                )
-
-                Text(
-                    text = item.name,
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .padding(top = 8.dp),
-                    minLines = 2,
-                    color = MaterialTheme.colorScheme.secondary,
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
-        }
-    }
-}
-
 
 @Preview(showBackground = true)
 @Composable
@@ -404,7 +359,7 @@ fun DetailContentPreview() {
     MovieDBComposeTheme {
         DetailContent(
             uiState = MovieDetailUiState(
-                loading = false,
+                loading = true,
                 movieDetailModel = MovieDetailModel(
                     "/feSiISwgEpVzR1v3zv2n2AU4ANJ.jpg",
                     listOf(
@@ -423,15 +378,6 @@ fun DetailContentPreview() {
                     105,
                     "Spiderman No Way Home",
                     6.401
-                ),
-                creditModel = CreditModel(
-                    609681,
-                    listOf(
-                        CastModel(1, "James", "John", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg"),
-                        CastModel(2, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg"),
-                        CastModel(3, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg"),
-                        CastModel(4, "Jammy", "Johnny", "/tUtgLOESpCx7ue4BaeCTqp3vn1b.jpg")
-                    )
                 ),
                 isFavourite = true,
             ),

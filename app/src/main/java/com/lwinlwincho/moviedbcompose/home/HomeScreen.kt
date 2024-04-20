@@ -114,7 +114,7 @@ fun HomeContent(
 
         MovieListSection(
             title = "NowShowing Movie",
-            movieList = uiState.popularMovies,
+            movieList = uiState.nowShowingMovies,
             onEvent = onEvent
         )
         MovieListSection(
@@ -137,7 +137,7 @@ fun MovieListSection(
         style = MaterialTheme.typography.headlineLarge,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp, start = 24.dp)
+            .padding(bottom = 16.dp, start = 24.dp,top = 24.dp)
     )
 
     LazyRow(

@@ -8,9 +8,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface RemoteDataSource {
 
-    //for combine state flow
-    val nowShowingMoviesFlow: Flow<BaseResponse<MovieResponse>>
-    val popularMoviesFlow: Flow<BaseResponse<MovieResponse>>
+   // val nowShowingMoviesFlow: Flow<BaseResponse<MovieResponse>>
+   // val popularMoviesFlow: Flow<BaseResponse<MovieResponse>>
 
     // for state flow
     fun getNowPlaying(): Flow<BaseResponse<MovieResponse>>
@@ -18,6 +17,6 @@ interface RemoteDataSource {
 
     fun getMovieDetail(movieId:Int): Flow<MovieDetailResponse>
 
-    fun getMovieCredits(movieId:Int): Flow<CreditResponse>
+   // fun getMovieCredits(movieId:Int): Flow<CreditResponse>
 
 }

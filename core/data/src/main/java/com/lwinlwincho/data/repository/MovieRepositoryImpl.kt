@@ -20,7 +20,7 @@ class MovieRepositoryImpl @Inject constructor(
     private val localDataSource: LocalDataSource
 ) : MovieRepository {
 
-    override val nowShowingMoviesFlow: Flow<List<MovieModel>>
+   /* override val nowShowingMoviesFlow: Flow<List<MovieModel>>
         get() = remoteDataSource.nowShowingMoviesFlow.map {
             it.results.toMovieModelList()
         }
@@ -28,7 +28,7 @@ class MovieRepositoryImpl @Inject constructor(
     override val popularMoviesFlow: Flow<List<MovieModel>>
         get() = remoteDataSource.popularMoviesFlow.map {
             it.results.toMovieModelList()
-        }
+        }*/
 
     override fun getNowShowingMovies(): Flow<List<MovieModel>> {
         return remoteDataSource.getNowPlaying().map {
@@ -45,12 +45,6 @@ class MovieRepositoryImpl @Inject constructor(
     override fun getMovieDetail(moveId: Int): Flow<MovieDetailModel> {
         return remoteDataSource.getMovieDetail(movieId = moveId).map {
             it.toMovieDetailModel()
-        }
-    }
-
-    override fun getMovieCredits(moveId: Int): Flow<CreditModel> {
-        return remoteDataSource.getMovieCredits(movieId = moveId).map {
-            it.toCreditModel()
         }
     }
 

@@ -28,10 +28,10 @@ interface MovieAPIService {
         @Query("api_key") apiKey: String = API_KEY
     ): MovieDetailResponse?
 
-    @GET("{movie_id}/credits")
+    /*@GET("{movie_id}/credits")
     suspend fun getCredits(
         @Path("movie_id") movieId: Int,
         @Query("api_key") apiKey: String = API_KEY
-    ): CreditResponse
+    ): CreditResponse*/
 
 }
