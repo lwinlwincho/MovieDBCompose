@@ -1,4 +1,4 @@
-package com.lwinlwincho.data
+package com.lwinlwincho.data.repository
 
 import com.lwinlwincho.data.repository.MovieRepositoryImpl
 import com.lwinlwincho.domain.repository.MovieRepository

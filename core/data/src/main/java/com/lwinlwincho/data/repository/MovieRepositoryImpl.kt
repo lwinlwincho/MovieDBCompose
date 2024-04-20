@@ -1,18 +1,19 @@
 package com.lwinlwincho.data.repository
 
 import com.lwinlwincho.data.datasource.LocalDataSource
-import com.lwinlwincho.domain.repository.MovieRepository
 import com.lwinlwincho.data.datasource.RemoteDataSource
-import com.lwinlwincho.data.mapper.toCreditModel
 import com.lwinlwincho.data.mapper.toMovieDetailModel
+import com.lwinlwincho.data.mapper.toMovieDetailResponse
 import com.lwinlwincho.data.mapper.toMovieModel
 import com.lwinlwincho.data.mapper.toMovieModelList
-import com.lwinlwincho.data.mapper.toMovieResponse
-import com.lwinlwincho.domain.remoteModel.CreditModel
+import com.lwinlwincho.data.mapper.toMovieResponseList
+import com.lwinlwincho.data.model.MovieResponse
 import com.lwinlwincho.domain.remoteModel.MovieDetailModel
 import com.lwinlwincho.domain.remoteModel.MovieModel
+import com.lwinlwincho.domain.repository.MovieRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class MovieRepositoryImpl @Inject constructor(
@@ -20,26 +21,52 @@ class MovieRepositoryImpl @Inject constructor(
     private val localDataSource: LocalDataSource
 ) : MovieRepository {
 
-   /* override val nowShowingMoviesFlow: Flow<List<MovieModel>>
-        get() = remoteDataSource.nowShowingMoviesFlow.map {
-            it.results.toMovieModelList()
-        }
-
-    override val popularMoviesFlow: Flow<List<MovieModel>>
-        get() = remoteDataSource.popularMoviesFlow.map {
+    override fun getNowShowingMovies(): Flow<List<MovieModel>> {
+        /*return remoteDataSource.getNowPlaying().map {
             it.results.toMovieModelList()
         }*/
 
-    override fun getNowShowingMovies(): Flow<List<MovieModel>> {
-        return remoteDataSource.getNowPlaying().map {
-            it.results.toMovieModelList()
-        }
+        return remoteDataSource.getNowPlaying()
+            .map {
+                it.results.toMovieModelList()
+            }.onEach {
+                saveInCache(it.toMovieResponseList())
+            }
+
+        /*return remoteDataSource.getNowPlaying().onEach {
+            *//* val movieModelList: List<MovieModel> = it.results
+             val movieList: List<Movie> = movieModelList.map {model ->
+                 Movie(
+                     id = model.id,
+                     posterPath = model.posterPath,
+                     title = model.title,
+                     releaseDate = model.releaseDate,
+                     vote_average = model.vote_average
+                 )
+             }*//*
+
+            saveInCache(movieList)
+        }*/
     }
+
+    /* override val nowShowingMoviesFlow: Flow<List<MovieModel>>
+         get() = remoteDataSource.nowShowingMoviesFlow.map {
+             it.results.toMovieModelList()
+         }
+
+     override val popularMoviesFlow: Flow<List<MovieModel>>
+         get() = remoteDataSource.popularMoviesFlow.map {
+             it.results.toMovieModelList()
+         }*/
 
     override fun getPopularMovies(): Flow<List<MovieModel>> {
         return remoteDataSource.getPopular().map {
             it.results.toMovieModelList()
         }
+    }
+
+    suspend fun saveInCache(movieModel: List<MovieResponse>) {
+        localDataSource.saveMovieListFromNetwork(movieModel)
     }
 
     override fun getMovieDetail(moveId: Int): Flow<MovieDetailModel> {
@@ -61,10 +88,10 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertFavouriteMovie(movie: MovieDetailModel) {
-        movie.toMovieResponse()?.let { localDataSource.insertFavouriteMovie(movie = it) }
+        movie.toMovieDetailResponse()?.let { localDataSource.insertFavouriteMovie(movie = it) }
     }
 
     override suspend fun deleteFavouriteMovie(movie: MovieDetailModel) {
-        movie.toMovieResponse()?.let { localDataSource.deleteFavouriteMovie(movie = it) }
+        movie.toMovieDetailResponse()?.let { localDataSource.deleteFavouriteMovie(movie = it) }
     }
 }

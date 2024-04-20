@@ -1,6 +1,5 @@
 package com.lwinlwincho.network
 
-import com.lwinlwincho.data.model.CreditResponse
 import com.lwinlwincho.data.model.MovieDetailResponse
 import com.lwinlwincho.data.model.MovieResponse
 import com.lwinlwincho.data.model.BaseResponse

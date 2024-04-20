@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
     id 'kotlin-kapt'
 }
 
@@ -50,5 +51,14 @@ dependencies {
     //dagger hilt
     implementation(libs.dagger.hilt)
     kapt(libs.hilt.android.compiler)
+
+    // Kotlin serialization json
+    implementation(libs.kotlinx.serialization.json)
+    // Retrofit with Kotlin serialization Converter
+    implementation(libs.kotlinx.serialization.converter)
+
+    //datastore
+    implementation(libs.androidx.datastore)
+    implementation(libs.kotlinx.collections.immutable)
 
 }

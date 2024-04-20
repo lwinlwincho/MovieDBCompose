@@ -37,7 +37,7 @@ fun MovieModel.toMovieResponse(): MovieResponse {
     )
 }
 
-fun MovieDetailModel.toMovieResponse(): MovieResponse? {
+fun MovieDetailModel.toMovieDetailResponse(): MovieResponse? {
     return releaseDate?.let {
         MovieResponse(
             id = id.toInt(),

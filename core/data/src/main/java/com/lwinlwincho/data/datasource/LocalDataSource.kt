@@ -5,6 +5,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
 
+    suspend fun saveMovieListFromNetwork(movieModel: List<MovieResponse>)
+
     fun getAllFavouriteMovies(): Flow<List<MovieResponse>>
 
     fun getFavouriteById(id: Long): Flow<MovieResponse?>

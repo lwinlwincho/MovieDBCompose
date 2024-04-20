@@ -43,8 +43,6 @@ dependencies {
     androidTestImplementation libs.androidx.test.ext.junit
     androidTestImplementation libs.androidx.test.espresso.core
 
-    implementation(libs.kotlinx.serialization.json)
-
     // Kotlin serialization json
     implementation(libs.kotlinx.serialization.json)
     // Retrofit with Kotlin serialization Converter
