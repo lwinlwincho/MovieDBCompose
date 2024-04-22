@@ -28,7 +28,7 @@ class HomeViewModel @Inject constructor(
     val uiState = combine(
         _errorMessage,
         movieRepository.getPopularMovies(),
-        movieRepository.getNowShowingMovies()
+        movieRepository.nowShowingMovies
     ) { errorMessage, popularMovies, nowShowingMovies ->
         HomeUiState(
             errorMessage = errorMessage,
@@ -50,7 +50,6 @@ class HomeViewModel @Inject constructor(
         //_errorMessage.update { "" }
         _errorMessage.value = ""
     }
-
 
     /* init {
          getNowShowing()
@@ -86,6 +85,13 @@ class HomeViewModel @Inject constructor(
     }*/
 }
 
+data class HomeUiState(
+    val popularMovies: List<MovieModel> = emptyList(),
+    val nowShowingMovies: List<MovieModel> = emptyList(),
+    val errorMessage: String = "",
+    val loading: Boolean = true
+)
+
 /*sealed class HomeUIState {
 
     data class SuccessNowShowing(val nowshowingMovieList: List<MovieModel>) : HomeUIState()
@@ -97,9 +103,3 @@ class HomeViewModel @Inject constructor(
     object Loading : HomeUIState()
 }*/
 
-data class HomeUiState(
-    val popularMovies: List<MovieModel> = emptyList(),
-    val nowShowingMovies: List<MovieModel> = emptyList(),
-    val errorMessage: String = "",
-    val loading: Boolean = true
-)

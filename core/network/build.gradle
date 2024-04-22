@@ -58,4 +58,7 @@ dependencies {
     //chucker
     debugImplementation(libs.chucker.library)
     releaseImplementation(libs.chucker.library.no.op)
+
+    //Coroutines
+    implementation(libs.kotlinx.coroutines.android)
 }

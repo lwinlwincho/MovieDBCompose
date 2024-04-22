@@ -2,6 +2,7 @@ package com.lwinlwincho
 
 import android.content.Context
 import androidx.datastore.dataStore
+import com.lwinlwincho.data.MovieList
 import com.lwinlwincho.data.datasource.LocalDataSource
 import com.lwinlwincho.datastore.MovieListSerializer
 import com.lwinlwincho.data.model.MovieResponse
@@ -17,6 +18,9 @@ class LocalDataSourceImpl @Inject constructor(
     private val movieDao: MovieDao,
     @ApplicationContext private val context: Context
 ) : LocalDataSource {
+
+    override val movieList: Flow<MovieList> get() = context.dataStore.data
+
     override suspend fun saveMovieListFromNetwork(movieModel: List<MovieResponse>) {
         context.dataStore.updateData {
             it.copy(
@@ -27,6 +31,8 @@ class LocalDataSourceImpl @Inject constructor(
 
     override fun getAllFavouriteMovies(): Flow<List<MovieResponse>> {
         return movieDao.getAllMovie().map {
+            it.toMovieResponseList()
+
             /*it.map { entity ->
                 MovieResponse(
                    id = entity.id,
@@ -36,8 +42,6 @@ class LocalDataSourceImpl @Inject constructor(
                    voteAverage = entity.voteAverage
                )
             }*/
-
-            it.toMovieResponseList()
         }
     }
 

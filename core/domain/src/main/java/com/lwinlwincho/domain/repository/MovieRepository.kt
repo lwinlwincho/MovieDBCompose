@@ -1,17 +1,16 @@
 package com.lwinlwincho.domain.repository
 
-import com.lwinlwincho.domain.remoteModel.CreditModel
 import com.lwinlwincho.domain.remoteModel.MovieDetailModel
 import com.lwinlwincho.domain.remoteModel.MovieModel
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
 
-    //val nowShowingMoviesFlow : Flow<List<MovieModel>>
+    val nowShowingMovies : Flow<List<MovieModel>>
     //val popularMoviesFlow: Flow<List<MovieModel>>
 
     //for state flow
-    fun getNowShowingMovies(): Flow<List<MovieModel>>
+    suspend fun fetchNowShowingMovies(): Flow<List<MovieModel>>
     fun getPopularMovies(): Flow<List<MovieModel>>
 
     fun getMovieDetail(moveId:Int): Flow<MovieDetailModel>

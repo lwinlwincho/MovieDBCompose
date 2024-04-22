@@ -21,43 +21,33 @@ class MovieRepositoryImpl @Inject constructor(
     private val localDataSource: LocalDataSource
 ) : MovieRepository {
 
-    override fun getNowShowingMovies(): Flow<List<MovieModel>> {
+    override val nowShowingMovies: Flow<List<MovieModel>>
+        get() = localDataSource.movieList.map { it.nowShowing.toMovieModelList() }
+
+
+    override suspend fun fetchNowShowingMovies(): Flow<List<MovieModel>> {
         /*return remoteDataSource.getNowPlaying().map {
             it.results.toMovieModelList()
         }*/
 
-        return remoteDataSource.getNowPlaying()
-            .map {
-                it.results.toMovieModelList()
-            }.onEach {
-                saveInCache(it.toMovieResponseList())
-            }
+         return remoteDataSource.getNowPlaying()
+             .map {
+                 it.results.toMovieModelList()
+             }.onEach {
+                 saveInCache(it.toMovieResponseList())
+             }
 
-        /*return remoteDataSource.getNowPlaying().onEach {
-            *//* val movieModelList: List<MovieModel> = it.results
-             val movieList: List<Movie> = movieModelList.map {model ->
-                 Movie(
-                     id = model.id,
-                     posterPath = model.posterPath,
-                     title = model.title,
-                     releaseDate = model.releaseDate,
-                     vote_average = model.vote_average
-                 )
-             }*//*
+       /* return remoteDataSource.getNowPlaying()
+                .map {
+                    Result.runCatching {
+                        it.map { movieResponse ->
+                            movieResponse.results.toMovieModelList()
+                        }
+                    }
 
-            saveInCache(movieList)
-        }*/
+                }*/
     }
 
-    /* override val nowShowingMoviesFlow: Flow<List<MovieModel>>
-         get() = remoteDataSource.nowShowingMoviesFlow.map {
-             it.results.toMovieModelList()
-         }
-
-     override val popularMoviesFlow: Flow<List<MovieModel>>
-         get() = remoteDataSource.popularMoviesFlow.map {
-             it.results.toMovieModelList()
-         }*/
 
     override fun getPopularMovies(): Flow<List<MovieModel>> {
         return remoteDataSource.getPopular().map {
