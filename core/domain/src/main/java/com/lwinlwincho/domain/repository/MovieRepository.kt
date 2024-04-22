@@ -10,7 +10,7 @@ interface MovieRepository {
     //val popularMoviesFlow: Flow<List<MovieModel>>
 
     //for state flow
-    suspend fun fetchNowShowingMovies(): Flow<List<MovieModel>>
+    suspend fun fetchNowShowingMovies(): Result<Unit>
     fun getPopularMovies(): Flow<List<MovieModel>>
 
     fun getMovieDetail(moveId:Int): Flow<MovieDetailModel>

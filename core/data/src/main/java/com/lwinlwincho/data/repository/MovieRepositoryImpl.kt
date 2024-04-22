@@ -6,14 +6,12 @@ import com.lwinlwincho.data.mapper.toMovieDetailModel
 import com.lwinlwincho.data.mapper.toMovieDetailResponse
 import com.lwinlwincho.data.mapper.toMovieModel
 import com.lwinlwincho.data.mapper.toMovieModelList
-import com.lwinlwincho.data.mapper.toMovieResponseList
 import com.lwinlwincho.data.model.MovieResponse
 import com.lwinlwincho.domain.remoteModel.MovieDetailModel
 import com.lwinlwincho.domain.remoteModel.MovieModel
 import com.lwinlwincho.domain.repository.MovieRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class MovieRepositoryImpl @Inject constructor(
@@ -22,32 +20,15 @@ class MovieRepositoryImpl @Inject constructor(
 ) : MovieRepository {
 
     override val nowShowingMovies: Flow<List<MovieModel>>
-        get() = localDataSource.movieList.map { it.nowShowing.toMovieModelList() }
+        get() = localDataSource.movieList.map {
+            it.nowShowing.toMovieModelList()
+        }
 
-
-    override suspend fun fetchNowShowingMovies(): Flow<List<MovieModel>> {
-        /*return remoteDataSource.getNowPlaying().map {
-            it.results.toMovieModelList()
-        }*/
-
-         return remoteDataSource.getNowPlaying()
-             .map {
-                 it.results.toMovieModelList()
-             }.onEach {
-                 saveInCache(it.toMovieResponseList())
-             }
-
-       /* return remoteDataSource.getNowPlaying()
-                .map {
-                    Result.runCatching {
-                        it.map { movieResponse ->
-                            movieResponse.results.toMovieModelList()
-                        }
-                    }
-
-                }*/
+    override suspend fun fetchNowShowingMovies(): Result<Unit> {
+        return remoteDataSource.getNowPlaying().map {
+            saveInCache(it.results)
+        }
     }
-
 
     override fun getPopularMovies(): Flow<List<MovieModel>> {
         return remoteDataSource.getPopular().map {

@@ -2,29 +2,36 @@ package com.lwinlwincho.moviedbcompose.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lwinlwincho.domain.repository.MovieRepository
 import com.lwinlwincho.domain.remoteModel.MovieModel
+import com.lwinlwincho.domain.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     movieRepository: MovieRepository
 ) : ViewModel() {
-    /*
-        private var _nowShowingUIState = MutableStateFlow(HomeUiState())
-        val nowShowingUIState: StateFlow<HomeUiState> = _nowShowingUIState.asStateFlow()
-
-        private var _popularUIState = MutableStateFlow(HomeUiState())
-        val popularUIState: StateFlow<HomeUiState> = _popularUIState.asStateFlow()*/
 
     private val _errorMessage = MutableStateFlow("")
-    
+    private val _loading = MutableStateFlow(true)
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            movieRepository.fetchNowShowingMovies().onFailure {
+                _errorMessage.value = it.message.toString()
+            }.onSuccess {
+                _loading.value = false
+            }
+        }
+    }
+
     val uiState = combine(
         _errorMessage,
         movieRepository.getPopularMovies(),
@@ -36,7 +43,7 @@ class HomeViewModel @Inject constructor(
             popularMovies = popularMovies.sortedByDescending { it.voteAverage },
             nowShowingMovies = nowShowingMovies.sortedByDescending { it.voteAverage }
         )
-    }.catch {error->
+    }.catch { error ->
         //if it is obj,set data with ".update{}" else ".value"
         //_errorMessage.update { error.message.toString() }
         _errorMessage.value = error.message.toString()

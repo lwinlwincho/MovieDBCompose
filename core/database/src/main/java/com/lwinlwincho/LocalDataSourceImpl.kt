@@ -12,17 +12,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-val Context.dataStore by dataStore("movie-settings.json", MovieListSerializer)
+val Context.movieDataStore by dataStore("movie-settings.json", MovieListSerializer)
 
 class LocalDataSourceImpl @Inject constructor(
     private val movieDao: MovieDao,
     @ApplicationContext private val context: Context
 ) : LocalDataSource {
 
-    override val movieList: Flow<MovieList> get() = context.dataStore.data
+    override val movieList: Flow<MovieList> get() = context.movieDataStore.data
 
     override suspend fun saveMovieListFromNetwork(movieModel: List<MovieResponse>) {
-        context.dataStore.updateData {
+        context.movieDataStore.updateData {
             it.copy(
                 nowShowing = movieModel
             )

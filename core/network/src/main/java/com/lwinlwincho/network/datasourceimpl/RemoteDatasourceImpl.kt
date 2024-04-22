@@ -12,35 +12,15 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RemoteDatasourceImpl @Inject constructor(
-    private val movieAPIService: MovieAPIService,
-    private val ioDispatcher: CoroutineDispatcher
+    private val movieAPIService: MovieAPIService
 ) : RemoteDataSource {
 
-    //for combine state
-    /* override val nowShowingMoviesFlow: Flow<BaseResponse<MovieResponse>>
-         get() = flow {
-             emit(movieAPIService.getNowPlaying())
-         }
-
-     override val popularMoviesFlow: Flow<BaseResponse<MovieResponse>>
-         get() = flow {
-             emit(movieAPIService.getPopular())
-         }*/
 
     //for state flow
-    override suspend fun getNowPlaying(): Flow<BaseResponse<MovieResponse>> {
-        return flow {
-            emit(movieAPIService.getNowPlaying())
+    override suspend fun getNowPlaying(): Result<BaseResponse<MovieResponse>> {
+        return Result.runCatching {
+            movieAPIService.getNowPlaying()
         }
-
-        /*return flow {
-            Result.runCatching {
-                withContext(ioDispatcher) {
-                    movieAPIService.getNowPlaying()
-                }
-            }
-        }*/
-
     }
 
     override fun getPopular(): Flow<BaseResponse<MovieResponse>> {
