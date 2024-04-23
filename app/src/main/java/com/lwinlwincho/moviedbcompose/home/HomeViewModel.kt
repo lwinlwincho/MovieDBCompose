@@ -19,9 +19,6 @@ class HomeViewModel @Inject constructor(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
 
-    private val _errorMessage = MutableStateFlow("")
-    private val _loading = MutableStateFlow(true)
-
     init {
         fetchNowShowingMovie()
         fetchPopularMovie()
@@ -61,12 +58,6 @@ class HomeViewModel @Inject constructor(
                 _uiState.update { it.copy(loading = false, errorMessage = "") }
             }
         }
-    }
-
-
-    fun clearErrorMessage() {
-        //_errorMessage.update { "" }
-        _errorMessage.value = ""
     }
 
     /* init {
@@ -112,7 +103,7 @@ data class HomeUiState(
 
 /*sealed class HomeUIState {
 
-    data class SuccessNowShowing(val nowshowingMovieList: List<MovieModel>) : HomeUIState()
+    data class SuccessNowShowing(val nowShowingMovieList: List<MovieModel>) : HomeUIState()
 
     data class SuccessPopular(val popularMovieList: List<MovieModel>) : HomeUIState()
 

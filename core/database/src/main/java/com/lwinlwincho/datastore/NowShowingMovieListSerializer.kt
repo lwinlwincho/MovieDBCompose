@@ -1,7 +1,7 @@
 package com.lwinlwincho.datastore
 
 import androidx.datastore.core.Serializer
-import com.lwinlwincho.data.NowShowingMovieList
+import com.lwinlwincho.data.NowShowingResponseList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
@@ -9,14 +9,14 @@ import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.io.OutputStream
 
-object NowShowingMovieListSerializer : Serializer<NowShowingMovieList> {
-    override val defaultValue: NowShowingMovieList
-        get() = NowShowingMovieList()
+object NowShowingMovieListSerializer : Serializer<NowShowingResponseList> {
+    override val defaultValue: NowShowingResponseList
+        get() = NowShowingResponseList()
 
-    override suspend fun readFrom(input: InputStream): NowShowingMovieList {
+    override suspend fun readFrom(input: InputStream): NowShowingResponseList {
         return try {
             Json.decodeFromString(
-                deserializer = NowShowingMovieList.serializer(),
+                deserializer = NowShowingResponseList.serializer(),
                 string = input.readBytes().decodeToString()
             )
         }catch (e : SerializationException){
@@ -25,11 +25,11 @@ object NowShowingMovieListSerializer : Serializer<NowShowingMovieList> {
         }
     }
 
-    override suspend fun writeTo(t: NowShowingMovieList, output: OutputStream) {
+    override suspend fun writeTo(t: NowShowingResponseList, output: OutputStream) {
         withContext(Dispatchers.IO) {
             output.write(
                 Json.encodeToString(
-                    serializer = NowShowingMovieList.serializer(),
+                    serializer = NowShowingResponseList.serializer(),
                     value = t
                 ).encodeToByteArray()
             )

@@ -31,7 +31,7 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun fetchNowShowingMovies(): Result<Unit> {
         return remoteDataSource.fetchNowPlaying().map {
-            saveInCache(it.results)
+            saveNowShowingMovie(it.results)
         }
     }
 
@@ -47,7 +47,7 @@ class MovieRepositoryImpl @Inject constructor(
         }
     }*/
 
-    private suspend fun saveInCache(movieModel: List<MovieResponse>) {
+    private suspend fun saveNowShowingMovie(movieModel: List<MovieResponse>) {
         localDataSource.saveNowShowingMovieListFromNetwork(movieModel)
     }
 

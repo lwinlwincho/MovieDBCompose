@@ -66,9 +66,7 @@ fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    /*val nowShowingUiState by viewModel.nowShowingUIState.collectAsState()
-    val popularUiState by viewModel.popularUIState.collectAsState()
-*/
+
     val uiState by viewModel.uiState.collectAsState()
 
     if (uiState.loading) {
@@ -78,10 +76,10 @@ fun HomeScreen(
     if (uiState.errorMessage.isNotEmpty()) {
         Toast.makeText(
             LocalContext.current,
-            "uiState.errorMessage",
+            uiState.errorMessage,
             Toast.LENGTH_SHORT
         ).show()
-        viewModel.clearErrorMessage()
+        // viewModel.clearErrorMessage()
     }
 
     HomeContent(
@@ -94,7 +92,6 @@ fun HomeScreen(
             }
         }
     )
-
 }
 
 @Composable

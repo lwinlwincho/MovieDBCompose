@@ -5,10 +5,8 @@ import com.lwinlwincho.data.model.BaseResponse
 import com.lwinlwincho.data.model.MovieDetailResponse
 import com.lwinlwincho.data.model.MovieResponse
 import com.lwinlwincho.network.MovieAPIService
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RemoteDatasourceImpl @Inject constructor(
