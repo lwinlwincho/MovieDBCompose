@@ -1,13 +1,17 @@
 package com.lwinlwincho.data.datasource
 
-import com.lwinlwincho.data.MovieList
+import com.lwinlwincho.data.NowShowingMovieList
+import com.lwinlwincho.data.PopularMovieList
 import com.lwinlwincho.data.model.MovieResponse
 import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
 
-    val movieList : Flow<MovieList>
-    suspend fun saveMovieListFromNetwork(movieModel: List<MovieResponse>)
+    val nowShowingMovieList : Flow<NowShowingMovieList>
+    suspend fun saveNowShowingMovieListFromNetwork(movieModel: List<MovieResponse>)
+
+    val popularMovieList : Flow<PopularMovieList>
+    suspend fun savePopularMovieListFromNetwork(movieModel: List<MovieResponse>)
 
     fun getAllFavouriteMovies(): Flow<List<MovieResponse>>
 

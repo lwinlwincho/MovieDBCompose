@@ -23,7 +23,8 @@ class HomeViewModel @Inject constructor(
     private val _loading = MutableStateFlow(true)
 
     init {
-        fetchMovie()
+        fetchNowShowingMovie()
+        fetchPopularMovie()
     }
 
     private var _uiState = MutableStateFlow(HomeUiState())
@@ -42,10 +43,20 @@ class HomeViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000L)
     )
 
-    private fun fetchMovie(){
+    private fun fetchNowShowingMovie(){
         viewModelScope.launch(Dispatchers.IO) {
             movieRepository.fetchNowShowingMovies().onFailure {
                _uiState.update { it.copy(loading = false, errorMessage = it.errorMessage) }
+            }.onSuccess {
+                _uiState.update { it.copy(loading = false, errorMessage = "") }
+            }
+        }
+    }
+
+    private fun fetchPopularMovie(){
+        viewModelScope.launch(Dispatchers.IO) {
+            movieRepository.fetchPopularMovies().onFailure {
+                _uiState.update { it.copy(loading = false, errorMessage = it.errorMessage) }
             }.onSuccess {
                 _uiState.update { it.copy(loading = false, errorMessage = "") }
             }

@@ -1,38 +1,44 @@
 package com.lwinlwincho
 
 import android.content.Context
-import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
-import com.lwinlwincho.data.MovieList
+import com.lwinlwincho.data.NowShowingMovieList
+import com.lwinlwincho.data.PopularMovieList
 import com.lwinlwincho.data.datasource.LocalDataSource
-import com.lwinlwincho.datastore.MovieListSerializer
+import com.lwinlwincho.datastore.NowShowingMovieListSerializer
 import com.lwinlwincho.data.model.MovieResponse
 import com.lwinlwincho.database.MovieDao
+import com.lwinlwincho.datastore.PopularMovieListSerializer
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-//val Context.movieDataStore by dataStore("movie-settings.json", MovieListSerializer)
+val Context.nowShowingDataStore by dataStore("now_showing_movie-settings.pb", NowShowingMovieListSerializer)
+val Context.popularDataStore by dataStore("popular_movie-settings.pb", PopularMovieListSerializer)
+
 
 class LocalDataSourceImpl @Inject constructor(
     private val movieDao: MovieDao,
     @ApplicationContext private val context: Context
 ) : LocalDataSource {
 
-   /* private val movieDataStore: DataStore<MovieList> = context.createDataStore(
-        fileName = "movie-settings.pb",
-        serializer = MovieListSerializer
-    )*/
+    override val nowShowingMovieList: Flow<NowShowingMovieList> get() = context.nowShowingDataStore.data
 
-    val Context.movieDataStore by dataStore("movie-settings.pb", MovieListSerializer)
-
-    override val movieList: Flow<MovieList> get() = context.movieDataStore.data
-
-    override suspend fun saveMovieListFromNetwork(movieModel: List<MovieResponse>) {
-        context.movieDataStore.updateData {
+    override suspend fun saveNowShowingMovieListFromNetwork(movieModel: List<MovieResponse>) {
+        context.nowShowingDataStore.updateData {
             it.copy(
-                nowShowing = movieModel,
+                nowShowing = movieModel
+            )
+        }
+    }
+
+    override val popularMovieList: Flow<PopularMovieList> get() =
+            context.popularDataStore.data
+
+    override suspend fun savePopularMovieListFromNetwork(movieModel: List<MovieResponse>) {
+        context.popularDataStore.updateData {
+            it.copy(
                 popular = movieModel
             )
         }

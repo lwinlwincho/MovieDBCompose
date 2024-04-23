@@ -84,17 +84,16 @@ fun HomeScreen(
         viewModel.clearErrorMessage()
     }
 
-
-        HomeContent(
-            uiState = uiState,
-            onEvent = { event ->
-                when (event) {
-                    is HomeEvent.GoToDetails -> {
-                        navController.navigate("detail/" + event.movieId)
-                    }
+    HomeContent(
+        uiState = uiState,
+        onEvent = { event ->
+            when (event) {
+                is HomeEvent.GoToDetails -> {
+                    navController.navigate("detail/" + event.movieId)
                 }
             }
-        )
+        }
+    )
 
 }
 
@@ -190,7 +189,7 @@ fun MovieItem(movie: MovieModel, onEvent: (HomeEvent) -> Unit) {
                     onEvent(HomeEvent.GoToDetails(movieId = movie.id))
                 }
                 .padding(4.dp)
-            ) {
+        ) {
             Image(
                 painter = if (isError.not() && !isLocalInspection) imageLoader else placeholder,
                 contentDescription = movie.id.toString(),

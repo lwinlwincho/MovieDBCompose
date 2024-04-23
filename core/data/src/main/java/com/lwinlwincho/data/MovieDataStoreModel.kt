@@ -4,7 +4,13 @@ import com.lwinlwincho.data.model.MovieResponse
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MovieList(
+data class NowShowingMovieList(
     val nowShowing: List<MovieResponse> = emptyList(),
+  //  val popular: List<MovieResponse> = emptyList()
+)
+
+
+@Serializable
+data class PopularMovieList(
     val popular: List<MovieResponse> = emptyList()
 )
