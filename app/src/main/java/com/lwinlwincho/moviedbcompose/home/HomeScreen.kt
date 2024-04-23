@@ -78,22 +78,24 @@ fun HomeScreen(
     if (uiState.errorMessage.isNotEmpty()) {
         Toast.makeText(
             LocalContext.current,
-            uiState.errorMessage,
+            "uiState.errorMessage",
             Toast.LENGTH_SHORT
         ).show()
         viewModel.clearErrorMessage()
     }
 
-    HomeContent(
-        uiState = uiState,
-        onEvent = { event ->
-            when (event) {
-                is HomeEvent.GoToDetails -> {
-                    navController.navigate("detail/" + event.movieId)
+
+        HomeContent(
+            uiState = uiState,
+            onEvent = { event ->
+                when (event) {
+                    is HomeEvent.GoToDetails -> {
+                        navController.navigate("detail/" + event.movieId)
+                    }
                 }
             }
-        }
-    )
+        )
+
 }
 
 @Composable
@@ -137,7 +139,7 @@ fun MovieListSection(
         style = MaterialTheme.typography.headlineLarge,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp, start = 24.dp,top = 24.dp)
+            .padding(bottom = 16.dp, start = 24.dp, top = 24.dp)
     )
 
     LazyRow(

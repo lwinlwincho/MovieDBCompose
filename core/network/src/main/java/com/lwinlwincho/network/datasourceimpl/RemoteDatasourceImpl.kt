@@ -16,18 +16,23 @@ class RemoteDatasourceImpl @Inject constructor(
 ) : RemoteDataSource {
 
 
-    //for state flow
-    override suspend fun getNowPlaying(): Result<BaseResponse<MovieResponse>> {
+    override suspend fun fetchNowPlaying(): Result<BaseResponse<MovieResponse>> {
         return Result.runCatching {
             movieAPIService.getNowPlaying()
         }
     }
 
-    override fun getPopular(): Flow<BaseResponse<MovieResponse>> {
+    override suspend fun fetchPopular(): Result<BaseResponse<MovieResponse>> {
+        return Result.runCatching {
+            movieAPIService.getPopular()
+        }
+    }
+
+    /*override suspend fun fetchPopular(): Flow<BaseResponse<MovieResponse>> {
         return flow {
             emit(movieAPIService.getPopular())
         }
-    }
+    }*/
 
     override fun getMovieDetail(movieId: Int): Flow<MovieDetailResponse> {
         return flow {

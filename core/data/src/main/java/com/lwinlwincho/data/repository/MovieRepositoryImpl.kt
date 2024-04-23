@@ -19,22 +19,33 @@ class MovieRepositoryImpl @Inject constructor(
     private val localDataSource: LocalDataSource
 ) : MovieRepository {
 
+    override val popularMovies: Flow<List<MovieModel>>
+        get() = localDataSource.movieList.map {
+            it.popular.toMovieModelList()
+        }
+
     override val nowShowingMovies: Flow<List<MovieModel>>
         get() = localDataSource.movieList.map {
             it.nowShowing.toMovieModelList()
         }
 
     override suspend fun fetchNowShowingMovies(): Result<Unit> {
-        return remoteDataSource.getNowPlaying().map {
+        return remoteDataSource.fetchNowPlaying().map {
             saveInCache(it.results)
         }
     }
 
-    override fun getPopularMovies(): Flow<List<MovieModel>> {
-        return remoteDataSource.getPopular().map {
-            it.results.toMovieModelList()
+    override suspend fun fetchPopularMovies():  Result<Unit> {
+        return remoteDataSource.fetchPopular().map {
+            saveInCache(it.results)
         }
     }
+
+    /*override fun getPopularMovies(): Flow<List<MovieModel>> {
+        return remoteDataSource.fetchPopular().map {
+            it.results.toMovieModelList()
+        }
+    }*/
 
     suspend fun saveInCache(movieModel: List<MovieResponse>) {
         localDataSource.saveMovieListFromNetwork(movieModel)

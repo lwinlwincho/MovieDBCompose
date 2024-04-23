@@ -6,6 +6,7 @@ lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.8.0"
 appcompat = "1.6.1"
 junit = "4.13.2"
+protobufJavalite = "3.18.0"
 testExtJunit = "1.1.5"
 espressoCore = "3.5.1"
 
@@ -88,6 +89,7 @@ coil-kt-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompo
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 google-accompanist-pager = {module ="com.google.accompanist:accompanist-pager", version.ref = "accompanistPager"}
 androidx-navigation-compose ={module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose"}
+protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavalite" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }

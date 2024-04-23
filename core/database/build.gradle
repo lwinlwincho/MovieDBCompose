@@ -60,5 +60,6 @@ dependencies {
     //datastore
     implementation(libs.androidx.datastore)
     implementation(libs.kotlinx.collections.immutable)
+    implementation(libs.protobuf.javalite)
 
 }

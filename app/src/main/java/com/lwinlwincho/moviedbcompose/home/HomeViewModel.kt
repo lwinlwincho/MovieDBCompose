@@ -8,50 +8,50 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    movieRepository: MovieRepository
+    private val movieRepository: MovieRepository
 ) : ViewModel() {
 
     private val _errorMessage = MutableStateFlow("")
     private val _loading = MutableStateFlow(true)
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            movieRepository.fetchNowShowingMovies().onFailure {
-                _errorMessage.value = it.message.toString()
-            }.onSuccess {
-                _loading.value = false
-            }
-        }
+        fetchMovie()
     }
 
+    private var _uiState = MutableStateFlow(HomeUiState())
     val uiState = combine(
-        _errorMessage,
-        movieRepository.getPopularMovies(),
-        movieRepository.nowShowingMovies
-    ) { errorMessage, popularMovies, nowShowingMovies ->
-        HomeUiState(
-            errorMessage = errorMessage,
-            loading = false,
+        movieRepository.popularMovies,
+        movieRepository.nowShowingMovies,
+        _uiState
+    ) { popularMovies, nowShowingMovies, uiState ->
+        uiState.copy(
             popularMovies = popularMovies.sortedByDescending { it.voteAverage },
             nowShowingMovies = nowShowingMovies.sortedByDescending { it.voteAverage }
         )
-    }.catch { error ->
-        //if it is obj,set data with ".update{}" else ".value"
-        //_errorMessage.update { error.message.toString() }
-        _errorMessage.value = error.message.toString()
     }.stateIn(
         scope = viewModelScope,
         initialValue = HomeUiState(),
         started = SharingStarted.WhileSubscribed(5000L)
     )
+
+    private fun fetchMovie(){
+        viewModelScope.launch(Dispatchers.IO) {
+            movieRepository.fetchNowShowingMovies().onFailure {
+               _uiState.update { it.copy(loading = false, errorMessage = it.errorMessage) }
+            }.onSuccess {
+                _uiState.update { it.copy(loading = false, errorMessage = "") }
+            }
+        }
+    }
+
 
     fun clearErrorMessage() {
         //_errorMessage.update { "" }
@@ -96,7 +96,7 @@ data class HomeUiState(
     val popularMovies: List<MovieModel> = emptyList(),
     val nowShowingMovies: List<MovieModel> = emptyList(),
     val errorMessage: String = "",
-    val loading: Boolean = true
+    val loading: Boolean = false
 )
 
 /*sealed class HomeUIState {

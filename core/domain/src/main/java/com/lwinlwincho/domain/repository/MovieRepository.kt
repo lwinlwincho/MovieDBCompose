@@ -7,11 +7,13 @@ import kotlinx.coroutines.flow.Flow
 interface MovieRepository {
 
     val nowShowingMovies : Flow<List<MovieModel>>
-    //val popularMoviesFlow: Flow<List<MovieModel>>
+    val popularMovies: Flow<List<MovieModel>>
 
     //for state flow
     suspend fun fetchNowShowingMovies(): Result<Unit>
-    fun getPopularMovies(): Flow<List<MovieModel>>
+    suspend fun fetchPopularMovies(): Result<Unit>
+
+    //fun getPopularMovies(): Flow<List<MovieModel>>
 
     fun getMovieDetail(moveId:Int): Flow<MovieDetailModel>
 

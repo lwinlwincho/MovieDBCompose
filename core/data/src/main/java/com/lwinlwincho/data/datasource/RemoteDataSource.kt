@@ -11,8 +11,8 @@ interface RemoteDataSource {
    // val popularMoviesFlow: Flow<BaseResponse<MovieResponse>>
 
     // for state flow
-    suspend fun getNowPlaying(): Result<BaseResponse<MovieResponse>>
-    fun getPopular(): Flow<BaseResponse<MovieResponse>>
+    suspend fun fetchNowPlaying(): Result<BaseResponse<MovieResponse>>
+    suspend fun fetchPopular(): Result<BaseResponse<MovieResponse>>
 
     fun getMovieDetail(movieId:Int): Flow<MovieDetailResponse>
 

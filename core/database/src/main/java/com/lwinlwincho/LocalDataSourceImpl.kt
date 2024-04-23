@@ -1,6 +1,7 @@
 package com.lwinlwincho
 
 import android.content.Context
+import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import com.lwinlwincho.data.MovieList
 import com.lwinlwincho.data.datasource.LocalDataSource
@@ -12,19 +13,27 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-val Context.movieDataStore by dataStore("movie-settings.json", MovieListSerializer)
+//val Context.movieDataStore by dataStore("movie-settings.json", MovieListSerializer)
 
 class LocalDataSourceImpl @Inject constructor(
     private val movieDao: MovieDao,
     @ApplicationContext private val context: Context
 ) : LocalDataSource {
 
+   /* private val movieDataStore: DataStore<MovieList> = context.createDataStore(
+        fileName = "movie-settings.pb",
+        serializer = MovieListSerializer
+    )*/
+
+    val Context.movieDataStore by dataStore("movie-settings.pb", MovieListSerializer)
+
     override val movieList: Flow<MovieList> get() = context.movieDataStore.data
 
     override suspend fun saveMovieListFromNetwork(movieModel: List<MovieResponse>) {
         context.movieDataStore.updateData {
             it.copy(
-                nowShowing = movieModel
+                nowShowing = movieModel,
+                popular = movieModel
             )
         }
     }
