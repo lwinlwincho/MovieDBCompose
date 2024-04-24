@@ -51,8 +51,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.layoutId
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.lwinlwincho.domain.remoteModel.GenreModel
-import com.lwinlwincho.domain.remoteModel.MovieDetailModel
+import com.lwinlwincho.domain.domainModel.GenreModel
+import com.lwinlwincho.domain.domainModel.MovieDetailModel
 import com.lwinlwincho.moviedbcompose.Loading
 import com.lwinlwincho.moviedbcompose.R
 import com.lwinlwincho.moviedbcompose.asyncImage

@@ -1,8 +1,8 @@
 package com.lwinlwincho.network
 
-import com.lwinlwincho.data.model.BaseResponse
-import com.lwinlwincho.data.model.MovieDetailResponse
-import com.lwinlwincho.data.model.MovieResponse
+import com.lwinlwincho.data.responseModel.BaseResponse
+import com.lwinlwincho.data.responseModel.MovieDetailResponse
+import com.lwinlwincho.data.responseModel.MovieResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

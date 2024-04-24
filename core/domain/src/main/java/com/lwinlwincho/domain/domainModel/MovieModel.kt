@@ -1,4 +1,4 @@
-package com.lwinlwincho.domain.remoteModel
+package com.lwinlwincho.domain.domainModel
 
 
 data class MovieModel(

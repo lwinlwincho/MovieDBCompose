@@ -1,7 +1,7 @@
-package com.lwinlwincho.domain.repository
+package com.lwinlwincho.domain
 
-import com.lwinlwincho.domain.remoteModel.MovieDetailModel
-import com.lwinlwincho.domain.remoteModel.MovieModel
+import com.lwinlwincho.domain.domainModel.MovieDetailModel
+import com.lwinlwincho.domain.domainModel.MovieModel
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {

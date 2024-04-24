@@ -1,4 +1,4 @@
-package com.lwinlwincho.database
+package com.lwinlwincho.roomDatabase
 
 
 import androidx.room.Dao

@@ -1,8 +1,8 @@
 package com.lwinlwincho.data.datasource
 
-import com.lwinlwincho.data.model.BaseResponse
-import com.lwinlwincho.data.model.MovieDetailResponse
-import com.lwinlwincho.data.model.MovieResponse
+import com.lwinlwincho.data.responseModel.BaseResponse
+import com.lwinlwincho.data.responseModel.MovieDetailResponse
+import com.lwinlwincho.data.responseModel.MovieResponse
 import kotlinx.coroutines.flow.Flow
 
 interface RemoteDataSource {

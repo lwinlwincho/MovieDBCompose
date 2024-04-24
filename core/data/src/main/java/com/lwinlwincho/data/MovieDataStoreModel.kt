@@ -1,6 +1,6 @@
 package com.lwinlwincho.data
 
-import com.lwinlwincho.data.model.MovieResponse
+import com.lwinlwincho.data.responseModel.MovieResponse
 import kotlinx.serialization.Serializable
 
 @Serializable

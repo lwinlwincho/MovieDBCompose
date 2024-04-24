@@ -1,6 +1,6 @@
 package com.lwinlwincho.moviedbcompose
 
-import com.lwinlwincho.domain.remoteModel.MovieModel
+import com.lwinlwincho.domain.domainModel.MovieModel
 
 object PreviewData {
     val previewMovieList = (1..10).map {

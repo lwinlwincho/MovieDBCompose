@@ -1,4 +1,4 @@
-package com.lwinlwincho.data.model
+package com.lwinlwincho.data.responseModel
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

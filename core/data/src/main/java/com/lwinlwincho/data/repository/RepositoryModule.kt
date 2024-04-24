@@ -1,7 +1,6 @@
 package com.lwinlwincho.data.repository
 
-import com.lwinlwincho.data.repository.MovieRepositoryImpl
-import com.lwinlwincho.domain.repository.MovieRepository
+import com.lwinlwincho.domain.MovieRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

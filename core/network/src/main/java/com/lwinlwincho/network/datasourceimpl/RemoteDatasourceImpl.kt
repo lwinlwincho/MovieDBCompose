@@ -1,9 +1,9 @@
 package com.lwinlwincho.network.datasourceimpl
 
 import com.lwinlwincho.data.datasource.RemoteDataSource
-import com.lwinlwincho.data.model.BaseResponse
-import com.lwinlwincho.data.model.MovieDetailResponse
-import com.lwinlwincho.data.model.MovieResponse
+import com.lwinlwincho.data.responseModel.BaseResponse
+import com.lwinlwincho.data.responseModel.MovieDetailResponse
+import com.lwinlwincho.data.responseModel.MovieResponse
 import com.lwinlwincho.network.MovieAPIService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

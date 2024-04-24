@@ -1,8 +1,7 @@
 package com.lwinlwincho
 
-import androidx.transition.Transition.MatchOrder
-import com.lwinlwincho.data.model.MovieResponse
-import com.lwinlwincho.database.MovieEntity
+import com.lwinlwincho.data.responseModel.MovieResponse
+import com.lwinlwincho.roomDatabase.MovieEntity
 
 fun MovieResponse.toMovieEntity(): MovieEntity {
     return MovieEntity(
@@ -14,7 +13,7 @@ fun MovieResponse.toMovieEntity(): MovieEntity {
     )
 }
 
-fun MovieEntity.toMovieResponse(): MovieResponse {
+fun MovieEntity.toDataModel(): MovieResponse {
     return MovieResponse(
         id = id,
         posterPath = posterPath,
@@ -24,8 +23,8 @@ fun MovieEntity.toMovieResponse(): MovieResponse {
     )
 }
 
-fun List<MovieEntity>.toMovieResponseList(): List<MovieResponse>{
+fun List<MovieEntity>.toDataModelList(): List<MovieResponse> {
     return this.map {
-        it.toMovieResponse()
+        it.toDataModel()
     }
 }

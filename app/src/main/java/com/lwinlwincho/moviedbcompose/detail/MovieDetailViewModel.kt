@@ -3,9 +3,8 @@ package com.lwinlwincho.moviedbcompose.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lwinlwincho.domain.remoteModel.CreditModel
-import com.lwinlwincho.domain.remoteModel.MovieDetailModel
-import com.lwinlwincho.domain.repository.MovieRepository
+import com.lwinlwincho.domain.domainModel.MovieDetailModel
+import com.lwinlwincho.domain.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

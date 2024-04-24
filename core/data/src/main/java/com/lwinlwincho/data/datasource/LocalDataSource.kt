@@ -2,7 +2,7 @@ package com.lwinlwincho.data.datasource
 
 import com.lwinlwincho.data.NowShowingResponseList
 import com.lwinlwincho.data.PopularResponseList
-import com.lwinlwincho.data.model.MovieResponse
+import com.lwinlwincho.data.responseModel.MovieResponse
 import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {

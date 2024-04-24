@@ -1,10 +1,8 @@
 package com.lwinlwincho.di
 
 import android.content.Context
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import com.lwinlwincho.database.MovieDao
-import com.lwinlwincho.database.MovieRoomDatabase
+import com.lwinlwincho.roomDatabase.MovieDao
+import com.lwinlwincho.roomDatabase.MovieRoomDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

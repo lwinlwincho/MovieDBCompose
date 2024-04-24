@@ -5,8 +5,8 @@ import androidx.datastore.dataStore
 import com.lwinlwincho.data.NowShowingResponseList
 import com.lwinlwincho.data.PopularResponseList
 import com.lwinlwincho.data.datasource.LocalDataSource
-import com.lwinlwincho.data.model.MovieResponse
-import com.lwinlwincho.database.MovieDao
+import com.lwinlwincho.data.responseModel.MovieResponse
+import com.lwinlwincho.roomDatabase.MovieDao
 import com.lwinlwincho.datastore.NowShowingMovieListSerializer
 import com.lwinlwincho.datastore.PopularMovieListSerializer
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -47,7 +47,7 @@ class LocalDataSourceImpl @Inject constructor(
 
     override fun getAllFavouriteMovies(): Flow<List<MovieResponse>> {
         return movieDao.getAllMovie().map {
-            it.toMovieResponseList()
+            it.toDataModelList()
 
             /*it.map { entity ->
                 MovieResponse(
@@ -63,7 +63,7 @@ class LocalDataSourceImpl @Inject constructor(
 
     override fun getFavouriteById(id: Long): Flow<MovieResponse?> {
         return movieDao.getMovieById(id).map {
-            it?.toMovieResponse()
+            it?.toDataModel()
         }
     }
 

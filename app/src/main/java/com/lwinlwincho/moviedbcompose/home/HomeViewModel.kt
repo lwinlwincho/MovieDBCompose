@@ -2,8 +2,8 @@ package com.lwinlwincho.moviedbcompose.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lwinlwincho.domain.remoteModel.MovieModel
-import com.lwinlwincho.domain.repository.MovieRepository
+import com.lwinlwincho.domain.domainModel.MovieModel
+import com.lwinlwincho.domain.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
