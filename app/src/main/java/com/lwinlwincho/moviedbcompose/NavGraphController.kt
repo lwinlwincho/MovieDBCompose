@@ -4,9 +4,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +20,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -30,7 +37,7 @@ import com.lwinlwincho.moviedbcompose.home.HomeScreen
 import com.lwinlwincho.moviedbcompose.ui.theme.MovieDBComposeTheme
 
 @Composable
-fun MainScreen() {
+fun NavGraphController() {
 
     val navController = rememberNavController()
 
@@ -115,6 +122,10 @@ fun BottomBarSession(navController: NavHostController) {
                         contentDescription = screen.route
                     )
                 },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    indicatorColor = MaterialTheme.colorScheme.onPrimary
+                ),
                 label = { Text(text = screen.route) },
                 onClick = {
                     navController.navigate(screen.route) {
@@ -139,8 +150,8 @@ fun BottomBarSession(navController: NavHostController) {
 @Composable
 fun getBottomNavIconForScreen(screen: String): ImageVector {
     return when (screen) {
-        "home" -> Icons.Filled.Home
-        "favourite" -> Icons.Filled.Favorite
+        "Home" -> Icons.Filled.Home
+        "Favourite" -> Icons.Filled.Favorite
         else -> {
             Icons.Filled.Home
         }
@@ -148,8 +159,8 @@ fun getBottomNavIconForScreen(screen: String): ImageVector {
 }
 
 sealed class BottomNavRoute(val route: String) {
-    data object Home : BottomNavRoute("home")
-    data object Favourite : BottomNavRoute("favourite")
+    data object Home : BottomNavRoute("Home")
+    data object Favourite : BottomNavRoute("Favourite")
 
 }
 
@@ -159,3 +170,13 @@ enum class MovieScreenRoute(val route: String) {
     Favourite(route = "favourite"),
     SeeMore(route = "seeMore")
 }
+
+@Preview
+@Composable
+fun PreviewBottomBarSession(){
+    MovieDBComposeTheme {
+        BottomBarSession(navController = rememberNavController())
+    }
+}
+
+

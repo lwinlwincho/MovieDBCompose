@@ -56,7 +56,9 @@ import com.lwinlwincho.domain.domainModel.MovieDetailModel
 import com.lwinlwincho.moviedbcompose.Loading
 import com.lwinlwincho.moviedbcompose.R
 import com.lwinlwincho.moviedbcompose.asyncImage
+import com.lwinlwincho.moviedbcompose.home.HomeContent
 import com.lwinlwincho.moviedbcompose.home.HomeEvent
+import com.lwinlwincho.moviedbcompose.home.HomeUiState
 import com.lwinlwincho.moviedbcompose.toHourMinute
 import com.lwinlwincho.moviedbcompose.ui.theme.MovieDBComposeTheme
 
@@ -108,12 +110,11 @@ fun DetailContent(
                 navigationIcon = {
                     IconButton(
                         onClick = { onEvent(HomeEvent.Back) }
-                        /* modifier = Modifier
-                             .clickable { onEvent(HomeEvent.Back) }*/
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
@@ -124,7 +125,8 @@ fun DetailContent(
                     ) {
                         Icon(
                             painter = painterResource(id = if (uiState.isFavourite) R.drawable.ic_save else R.drawable.ic_unsave),
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
@@ -199,7 +201,6 @@ fun DetailHeaderSession(movieDetailModel: MovieDetailModel) {
             text = movieDetailModel.title,
             minLines = 2,
             style = MaterialTheme.typography.displayMedium,
-            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .constrainAs(movieName) {
                     top.linkTo(movieCover.bottom)
@@ -226,7 +227,7 @@ fun DetailStarRate(voteAverage: Double) {
 
         Text(
             text = stringResource(R.string.start_rate, voteAverage),
-            color = MaterialTheme.colorScheme.secondary,
+            color = MaterialTheme.colorScheme.inverseOnSurface,
             style = MaterialTheme.typography.labelLarge,
             modifier = Modifier
                 .wrapContentSize()
@@ -246,13 +247,13 @@ fun DetailGenre(genres: List<GenreModel>) {
             Box(
                 modifier = Modifier
                     .clip(shape = RoundedCornerShape(100.dp))
-                    .background(MaterialTheme.colorScheme.tertiary)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
                     .padding(top = 4.dp, end = 12.dp, start = 12.dp, bottom = 4.dp)
             ) {
                 Text(
-                    text = it.name,
-                    color = MaterialTheme.colorScheme.onTertiary,
-                    style = MaterialTheme.typography.labelSmall
+                    text = it.name.uppercase(),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -273,14 +274,13 @@ fun DetailLength(movieDetailModel: MovieDetailModel) {
         ) {
             Text(
                 text = "Length",
-                color = MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.inverseOnSurface,
                 style = MaterialTheme.typography.labelLarge
             )
 
             Text(
                 text = movieDetailModel.runtime.toHourMinute(),
                 modifier = Modifier.padding(top = 4.dp),
-                color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.labelLarge
             )
         }
@@ -290,7 +290,7 @@ fun DetailLength(movieDetailModel: MovieDetailModel) {
         ) {
             Text(
                 text = "Language",
-                color = MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.inverseOnSurface,
                 style = MaterialTheme.typography.labelLarge
             )
 
@@ -304,7 +304,6 @@ fun DetailLength(movieDetailModel: MovieDetailModel) {
                     else -> movieDetailModel.originalLanguage
                 },
                 modifier = Modifier.padding(top = 4.dp),
-                color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.labelLarge
             )
         }
@@ -314,14 +313,13 @@ fun DetailLength(movieDetailModel: MovieDetailModel) {
         ) {
             Text(
                 text = "Rating",
-                color = MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.inverseOnSurface,
                 style = MaterialTheme.typography.labelLarge
             )
 
             Text(
                 text = (movieDetailModel.voteAverage / 2).toString(),
                 modifier = Modifier.padding(top = 4.dp),
-                color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.labelLarge
             )
         }
@@ -336,7 +334,7 @@ fun DetailDescriptionSession(overview: String) {
             .wrapContentSize()
             .padding(top = 24.dp, start = 24.dp)
             .layoutId("tvDescription"),
-        color = MaterialTheme.colorScheme.secondary,
+        color = MaterialTheme.colorScheme.primary,
         style = MaterialTheme.typography.headlineLarge
     )
 
@@ -347,7 +345,7 @@ fun DetailDescriptionSession(overview: String) {
             .wrapContentSize()
             .padding(top = 8.dp, start = 24.dp, end = 24.dp)
             .layoutId("description"),
-        color = MaterialTheme.colorScheme.secondary,
+        color = MaterialTheme.colorScheme.inverseOnSurface,
         style = MaterialTheme.typography.bodyLarge
     )
 }
@@ -379,9 +377,11 @@ fun DetailContentPreview() {
                     "Spiderman No Way Home",
                     6.401
                 ),
-                isFavourite = true,
+                isFavourite = false,
             ),
             onEvent = {}
         )
     }
 }
+
+

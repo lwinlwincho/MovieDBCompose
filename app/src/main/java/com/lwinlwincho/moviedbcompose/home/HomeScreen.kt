@@ -51,11 +51,12 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.lwinlwincho.domain.domainModel.MovieModel
 import com.lwinlwincho.moviedbcompose.Loading
-import com.lwinlwincho.moviedbcompose.PreviewData.previewMovieList
+import com.lwinlwincho.moviedbcompose.PreviewMovieData.previewMovieList
 import com.lwinlwincho.moviedbcompose.R
 import com.lwinlwincho.moviedbcompose.ui.theme.MovieDBComposeTheme
 import com.lwinlwincho.network.IMAGE_URL
@@ -133,6 +134,7 @@ fun MovieListSection(
         text = title,
         textAlign = TextAlign.Start,
         style = MaterialTheme.typography.headlineLarge,
+        color = MaterialTheme.colorScheme.primary,
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp, start = 24.dp, top = 24.dp)
@@ -243,8 +245,8 @@ fun MovieItem(movie: MovieModel, onEvent: (HomeEvent) -> Unit) {
 fun HeaderSection(movieList: List<MovieModel>) {
 
     val pagerState = rememberPagerState(
-        pageCount = { movieList.size },
-        initialPage = movieList.size / 2
+        pageCount = { movieList.size/ 4 },
+        initialPage = 0
     )
 
     var isLoading by remember { mutableStateOf(true) }
@@ -315,7 +317,7 @@ fun HeaderSection(movieList: List<MovieModel>) {
     ) {
         repeat(pagerState.pageCount) { iteration ->
             val color =
-                if (pagerState.currentPage == iteration) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary
+                if (pagerState.currentPage == iteration) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
             Box(
                 modifier = Modifier
                     .padding(2.dp)
@@ -330,16 +332,15 @@ fun HeaderSection(movieList: List<MovieModel>) {
 
 @Preview(showBackground = true)
 @Composable
-fun MovieItemPreview() {
+fun PreviewHomeContent(){
     MovieDBComposeTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
-            HomeContent(
-                HomeUiState(
-                    popularMovies = previewMovieList,
-                    nowShowingMovies = previewMovieList
-                ),
-                onEvent = {}
-            )
+        HomeContent(
+            uiState = (HomeUiState(
+                popularMovies = previewMovieList,
+                nowShowingMovies = previewMovieList
+            ))
+        ) {
+
         }
     }
 }

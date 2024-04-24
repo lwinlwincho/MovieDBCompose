@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,9 +18,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.lwinlwincho.moviedbcompose.PreviewMovieData.previewMovieList
 import com.lwinlwincho.moviedbcompose.Loading
-import com.lwinlwincho.moviedbcompose.PreviewData
-import com.lwinlwincho.moviedbcompose.PreviewData.previewMovieList
 import com.lwinlwincho.moviedbcompose.R
 import com.lwinlwincho.moviedbcompose.home.HomeEvent
 import com.lwinlwincho.moviedbcompose.home.MovieItem
@@ -86,7 +84,7 @@ fun FavouriteContent(
 
 @Preview
 @Composable
-fun previewFavourite() {
+fun PreviewFavourite() {
     MovieDBComposeTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             FavouriteContent(favouriteUiState = FavouriteUiState(previewMovieList), onEvent = {})
