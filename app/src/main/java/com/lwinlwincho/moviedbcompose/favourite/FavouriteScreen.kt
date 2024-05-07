@@ -18,10 +18,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.lwinlwincho.moviedbcompose.PreviewMovieData.previewMovieList
+import com.lwinlwincho.moviedbcompose.MovieDataPreview.previewMovieList
 import com.lwinlwincho.moviedbcompose.Loading
 import com.lwinlwincho.moviedbcompose.R
-import com.lwinlwincho.moviedbcompose.home.HomeEvent
+import com.lwinlwincho.moviedbcompose.HomeEvent
 import com.lwinlwincho.moviedbcompose.home.MovieItem
 import com.lwinlwincho.moviedbcompose.ui.theme.MovieDBComposeTheme
 

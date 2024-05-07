@@ -56,9 +56,7 @@ import com.lwinlwincho.domain.domainModel.MovieDetailModel
 import com.lwinlwincho.moviedbcompose.Loading
 import com.lwinlwincho.moviedbcompose.R
 import com.lwinlwincho.moviedbcompose.asyncImage
-import com.lwinlwincho.moviedbcompose.home.HomeContent
-import com.lwinlwincho.moviedbcompose.home.HomeEvent
-import com.lwinlwincho.moviedbcompose.home.HomeUiState
+import com.lwinlwincho.moviedbcompose.HomeEvent
 import com.lwinlwincho.moviedbcompose.toHourMinute
 import com.lwinlwincho.moviedbcompose.ui.theme.MovieDBComposeTheme
 

@@ -1,4 +1,4 @@
-package com.lwinlwincho.moviedbcompose.home
+package com.lwinlwincho.moviedbcompose
 
 interface HomeEvent {
 

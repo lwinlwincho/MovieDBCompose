@@ -1,17 +1,18 @@
 package com.lwinlwincho.moviedbcompose
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -49,56 +50,35 @@ fun NavGraphController() {
         else -> true
     }
 
-    MovieDBComposeTheme {
-        Scaffold(
-            bottomBar = {
-                if (showBottomBar)
-                    BottomBarSession(navController = navController)
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            if (showBottomBar)
+                BottomBarSession(navController = navController)
+        }
+    ) { innerPadding ->
+
+        NavHost(
+            navController = navController,
+            startDestination = MovieScreenRoute.Home.route,
+            modifier = Modifier.padding(paddingValues = innerPadding)
+        ) {
+            composable(route = MovieScreenRoute.Home.route) {
+                HomeScreen(navController = navController)
             }
-        ) { innerPadding ->
 
-            NavHost(
-                navController = navController,
-                startDestination = MovieScreenRoute.Home.route,
-                modifier = Modifier.padding(paddingValues = innerPadding)
+            composable(route = MovieScreenRoute.Favourite.route) {
+                FavouriteScreen(navController = navController)
+            }
+
+            composable(
+                route = MovieScreenRoute.Detail.route,
+                arguments = listOf(navArgument("movieId") { type = NavType.IntType })
             ) {
-                composable(route = MovieScreenRoute.Home.route) {
-                    HomeScreen(navController = navController)
-                }
-
-                composable(route = MovieScreenRoute.Favourite.route) {
-                    FavouriteScreen(navController = navController)
-                }
-
-                composable(
-                    route = MovieScreenRoute.Detail.route,
-                    arguments = listOf(navArgument("movieId") { type = NavType.IntType })
-                ) {
-                    DetailScreen(onBack = { navController.navigateUp() })
-                }
+                DetailScreen(onBack = { navController.navigateUp() })
             }
         }
     }
-
-    /* NavHost(
-         navController = navController,
-         startDestination = MovieScreenRoute.Home.route
-     ) {
-
-         composable(route = MovieScreenRoute.Home.route) {
-             HomeScreen(navController)
-         }
-
-         composable(
-             route = MovieScreenRoute.Detail.route,
-             arguments = listOf(navArgument("movieId") { type = NavType.IntType })
-         ) { backStackEntry ->
-             val id = backStackEntry.arguments?.getInt("movieId")
-             if (id != null) {
-                 DetailScreen(id)
-             }
-         }
-     }*/
 }
 
 @Composable
@@ -112,23 +92,30 @@ fun BottomBarSession(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    NavigationBar {
-        bottomNavRouteList.forEach { screen ->
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.surface,
+        tonalElevation = 0.dp
+    ) {
+        bottomNavRouteList.forEach { bottomNavRoute ->
+
             NavigationBarItem(
-                selected = currentDestination?.route == screen.route,
-                icon = {
-                    Icon(
-                        imageVector = getBottomNavIconForScreen(screen = screen.route),
-                        contentDescription = screen.route
-                    )
-                },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,
-                    indicatorColor = MaterialTheme.colorScheme.onPrimary
+                    indicatorColor = MaterialTheme.colorScheme.surface
                 ),
-                label = { Text(text = screen.route) },
+                selected = currentDestination?.route == bottomNavRoute.route,
+                icon = {
+                    Icon(
+                        painter = painterResource(id = getBottomNavIconForScreen(screen = bottomNavRoute.route)),
+                        contentDescription = bottomNavRoute.route,
+                        modifier = Modifier.size(26.dp)
+                    )
+                },
+                label = {
+                    Text(text = bottomNavRoute.route)
+                },
                 onClick = {
-                    navController.navigate(screen.route) {
+                    navController.navigate(bottomNavRoute.route) {
                         // Pop up to the start destination of the graph to
                         // avoid building up a large stack of destinations
                         // on the back stack as users select items
@@ -148,12 +135,12 @@ fun BottomBarSession(navController: NavHostController) {
 }
 
 @Composable
-fun getBottomNavIconForScreen(screen: String): ImageVector {
+fun getBottomNavIconForScreen(screen: String): Int {
     return when (screen) {
-        "Home" -> Icons.Filled.Home
-        "Favourite" -> Icons.Filled.Favorite
+        "Home" -> R.drawable.ic_home
+        "Favourite" -> R.drawable.ic_favourite
         else -> {
-            Icons.Filled.Home
+            R.drawable.ic_home
         }
     }
 }
@@ -171,11 +158,13 @@ enum class MovieScreenRoute(val route: String) {
     SeeMore(route = "seeMore")
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun PreviewBottomBarSession(){
+fun PreviewBottomBarSession() {
     MovieDBComposeTheme {
-        BottomBarSession(navController = rememberNavController())
+        Surface {
+            BottomBarSession(navController = rememberNavController())
+        }
     }
 }
 

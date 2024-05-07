@@ -27,7 +27,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -51,12 +50,12 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.lwinlwincho.domain.domainModel.MovieModel
+import com.lwinlwincho.moviedbcompose.HomeEvent
 import com.lwinlwincho.moviedbcompose.Loading
-import com.lwinlwincho.moviedbcompose.PreviewMovieData.previewMovieList
+import com.lwinlwincho.moviedbcompose.MovieDataPreview.previewMovieList
 import com.lwinlwincho.moviedbcompose.R
 import com.lwinlwincho.moviedbcompose.ui.theme.MovieDBComposeTheme
 import com.lwinlwincho.network.IMAGE_URL
