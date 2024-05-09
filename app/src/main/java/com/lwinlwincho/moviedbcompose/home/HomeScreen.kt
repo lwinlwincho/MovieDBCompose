@@ -1,6 +1,8 @@
 package com.lwinlwincho.moviedbcompose.home
 
 import android.widget.Toast
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,6 +31,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,6 +62,8 @@ import com.lwinlwincho.moviedbcompose.MovieDataPreview.previewMovieList
 import com.lwinlwincho.moviedbcompose.R
 import com.lwinlwincho.moviedbcompose.ui.theme.MovieDBComposeTheme
 import com.lwinlwincho.network.IMAGE_URL
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 @Composable
@@ -108,7 +113,7 @@ fun HomeContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        HeaderSection(movieList = uiState.popularMovies)
+        HeaderSection(movieList = uiState.nowShowingMovies.take(5))
 
         MovieListSection(
             title = "NowShowing Movie",
@@ -244,7 +249,7 @@ fun MovieItem(movie: MovieModel, onEvent: (HomeEvent) -> Unit) {
 fun HeaderSection(movieList: List<MovieModel>) {
 
     val pagerState = rememberPagerState(
-        pageCount = { movieList.size/ 4 },
+        pageCount = { movieList.size },
         initialPage = 0
     )
 
@@ -252,6 +257,22 @@ fun HeaderSection(movieList: List<MovieModel>) {
     var isError by remember { mutableStateOf(false) }
     val placeholder = painterResource(id = R.drawable.dummy)
     val isLocalInspection = LocalInspectionMode.current
+
+    LaunchedEffect(key1 = pagerState.currentPage) {
+        launch {
+            delay(2000)
+            with(pagerState) {
+                val target = if (currentPage < movieList.count() - 1) currentPage + 1 else 0
+                animateScrollToPage(
+                    page = target,
+                    animationSpec = tween(
+                        durationMillis = 0,
+                        easing = FastOutLinearInEasing
+                    )
+                )
+            }
+        }
+    }
 
     HorizontalPager(
         state = pagerState,
@@ -331,7 +352,7 @@ fun HeaderSection(movieList: List<MovieModel>) {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewHomeContent(){
+fun PreviewHomeContent() {
     MovieDBComposeTheme {
         HomeContent(
             uiState = (HomeUiState(
